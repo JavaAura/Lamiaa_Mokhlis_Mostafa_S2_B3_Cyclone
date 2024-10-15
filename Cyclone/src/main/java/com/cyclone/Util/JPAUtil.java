@@ -16,7 +16,7 @@ public class JPAUtil {
     static {
         try {
             logger.info("Attempting to create EntityManagerFactory...");
-            entityManagerFactory = Persistence.createEntityManagerFactory("blogJPA");
+            entityManagerFactory = Persistence.createEntityManagerFactory("cycloneJPA");
             logger.info("EntityManagerFactory created successfully.");
         } catch (Exception e) {
            logger.error("Error creating EntityManagerFactory: " + e.getMessage());
