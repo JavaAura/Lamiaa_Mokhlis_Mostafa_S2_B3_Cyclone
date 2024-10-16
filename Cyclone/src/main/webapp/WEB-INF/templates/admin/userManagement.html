@@ -50,7 +50,10 @@
     	<h1>Admin Dashboard</h1>
     	<p>Welcome, <span th:text="${session.loggedInUser.firstName}"></span>!</p>
     	<p>Role, <span th:text="${session.loggedInUser.role}"></span>!</p>
-    	<a th:href="@{/auth?action=logout}">Logout</a>
+    	<form th:action="@{/auth}" method="post">
+    		<input type="hidden" name="action" value="logout">
+    		<button type="submit" class="">Logout</button>
+		</form>
         <h1 class="text-3xl font-bold mb-6 text-secondary">Gestion des Utilisateurs</h1>
 
         <!-- Barre de recherche -->

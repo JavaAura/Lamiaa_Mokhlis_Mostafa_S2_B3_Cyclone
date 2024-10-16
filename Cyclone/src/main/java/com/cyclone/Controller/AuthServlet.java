@@ -45,8 +45,8 @@ public class AuthServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Render the Thymeleaf template
-        WebContext context = new WebContext(request, response, getServletContext());
-        templateEngine.process("authentication", context, response.getWriter());
+    	WebContext context = new WebContext(request, response, getServletContext());	
+    	templateEngine.process("authentication", context, response.getWriter());
     }
 
 	/**
@@ -55,14 +55,14 @@ public class AuthServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String action = request.getParameter("action");
+		WebContext context = new WebContext(request, response, getServletContext());
+		String page = "authentication";
 		
 		if(action.equals("login")) {
 			String email = request.getParameter("email");
 		    String password = request.getParameter("password");
 
-		    String page = "authentication";
 		    User user = null;
-		    WebContext context = new WebContext(request, response, getServletContext());
 
 		    if (email != null && !email.trim().isEmpty() && password != null && !password.trim().isEmpty()) {
 		        Optional<User> userOpt = userService.login(email, password);
@@ -93,9 +93,15 @@ public class AuthServlet extends HttpServlet {
 		        context.setVariable("msg", "Please enter both email and password.");
 		        templateEngine.process(page, context, response.getWriter());
 		    }
+		} else if(action.equals("logout")) {
+			HttpSession session = request.getSession(false);
+	        if (session != null) {
+	            session.invalidate();
+	        }
+    		context.setVariable("msg", "logged out!!");
+    		templateEngine.process(page, context, response.getWriter());
 		} else {
-		    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
 		}
 	}
-
 }
