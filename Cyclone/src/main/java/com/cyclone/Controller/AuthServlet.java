@@ -38,7 +38,7 @@ public class AuthServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Render the Thymeleaf template
         WebContext context = new WebContext(request, response, getServletContext());
-        templateEngine.process("welcome", context, response.getWriter());
+        templateEngine.process("authentication", context, response.getWriter());
     }
 
 	/**
@@ -46,7 +46,13 @@ public class AuthServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response);
+		String action = request.getParameter("action");
+		
+		if(action.equals("login")) {
+			
+		}else {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
+		}
 	}
 
 }
