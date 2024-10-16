@@ -28,7 +28,7 @@ public class User {
 
     @NotNull(message = "Email cannot be null")
     @Email(message = "Email should be valid")
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, unique = true, length = 200)
     private String email;
 
     @NotNull(message = "Password cannot be null")

@@ -74,6 +74,13 @@
     		<artifactId>hibernate-validator</artifactId>
     		<version>6.1.5.Final</version>
 		</dependency>
+		
+		<!--Bcrypt password hash dependency-->
+		<dependency>
+    		<groupId>org.mindrot</groupId>
+    		<artifactId>jbcrypt</artifactId>
+    		<version>0.4</version>
+		</dependency>
 
         <!-- SLF4J API -->
         <dependency>

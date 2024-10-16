@@ -1,0 +1,8 @@
+23:43:07.529 [main] INFO  com.cyclone.Util.JPAUtil - Attempting to create EntityManagerFactory...
+23:43:07.794 [main] ERROR com.cyclone.Util.JPAUtil - Error creating EntityManagerFactory: No Persistence provider for EntityManager named blogJPA
+23:43:53.960 [main] INFO  com.cyclone.Util.JPAUtil - This is an INFO log
+23:43:53.963 [main] DEBUG com.cyclone.Util.JPAUtil - This is a DEBUG log
+23:43:53.963 [main] ERROR com.cyclone.Util.JPAUtil - This is an ERROR log
+23:43:53.966 [main] ERROR com.cyclone.Util.JPAUtil - An exception occurred
+java.lang.ArithmeticException: / by zero
+	at com.cyclone.Util.JPAUtil.main(JPAUtil.java:22)
