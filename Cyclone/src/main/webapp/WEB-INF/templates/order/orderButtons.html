@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Order Page</title>
+</head>
+<body>
+      <a th:href="@{/orders(action='viewClientOrders', clientId=1)}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
+        Afficher la liste des commandes
+    </a>
+    
+     <a th:href="@{/orders(action='addOrder', clientId=1)}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mt-4">
+        Ajouter une commande
+    </a>
+</body>
+</html>

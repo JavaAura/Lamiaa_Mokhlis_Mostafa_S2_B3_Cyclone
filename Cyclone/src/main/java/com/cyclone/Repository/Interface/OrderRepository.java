@@ -15,4 +15,6 @@ public interface OrderRepository {
 
 	    void modifyOrder(Order order);
 	    void removeOrder(int id);
+	    
+	    List<Order> getOrdersByClient(int clientId);
 }

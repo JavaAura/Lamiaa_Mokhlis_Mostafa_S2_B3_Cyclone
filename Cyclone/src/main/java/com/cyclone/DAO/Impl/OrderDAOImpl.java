@@ -3,6 +3,7 @@ package com.cyclone.DAO.Impl;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import com.cyclone.DAO.Interface.OrderDAO;
 import com.cyclone.Model.Order;
@@ -16,7 +17,7 @@ public class OrderDAOImpl implements OrderDAO{
         entityManager.persist(order);
         return order;
     }
-
+    
     @Override
     public Order getOrderById(int id) {
         return entityManager.find(Order.class, id);
@@ -24,7 +25,15 @@ public class OrderDAOImpl implements OrderDAO{
 
     @Override
     public List<Order> getAllOrders() {
-        return entityManager.createQuery("SELECT o FROM Order o", Order.class).getResultList();
+    	  try {
+    	        List<Order> orders = entityManager.createQuery("SELECT o FROM Order o", Order.class).getResultList();
+    	        System.out.println("Fetched orders: " + orders.size());
+    	        return orders;
+    	    } catch (Exception e) {
+    	        System.out.println("Error fetching orders: " + e.getMessage());
+    	        e.printStackTrace();
+    	        return null;
+    	    }
     }
 
     @Override
@@ -39,4 +48,6 @@ public class OrderDAOImpl implements OrderDAO{
             entityManager.remove(order);
         }
     }
+    
+    
 }

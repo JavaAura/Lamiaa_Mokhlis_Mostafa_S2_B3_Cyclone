@@ -17,4 +17,14 @@
     <url-pattern>/auth</url-pattern>
   </servlet-mapping>
 
+
+ <servlet>
+        <servlet-name>OrderServlet</servlet-name>
+        <servlet-class>com.cyclone.Controller.OrderServlet</servlet-class> 
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>OrderServlet</servlet-name>
+        <url-pattern>/orders</url-pattern>
+    </servlet-mapping>
 </web-app>
