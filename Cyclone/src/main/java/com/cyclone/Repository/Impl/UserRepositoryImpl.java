@@ -30,7 +30,6 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public Optional<User> getUserByEmail(String email) {
         User user = userDAO.getUserByEmail(email);
-        System.out.println("user:" + user);
         return Optional.ofNullable(user); 
     }
 
