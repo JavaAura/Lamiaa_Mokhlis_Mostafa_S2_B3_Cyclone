@@ -51,10 +51,28 @@
 	        } catch (Exception e) {
 	            logger.error("Error retrieving all products", e);
 	            return null;
-	        }
-			
-			
+	        }	
 	    }
+		/**
+		 * Adds a new product to the database.
+		 *
+		 * @param product The Product entity to be added.
+		 * @return true if the product was added successfully, false otherwise.
+		 */
+		@Override
+		public boolean addProduct(Product product) {
+			try {
+				EntityTransaction transaction = entityManager.getTransaction();
+				transaction.begin();
+				entityManager.persist(product);
+				transaction.commit();
+				return true;	
+			} catch (Exception e) {
+				logger.error("Error adding product", e);
+				return false;
+			}
+		}
+
 
 	 
 	

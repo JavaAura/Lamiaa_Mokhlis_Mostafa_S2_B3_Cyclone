@@ -17,4 +17,8 @@ public class ProductService {
         return productRepository.getAllProducts();
     }
 
+    public boolean addProduct(Product product) {
+        return productRepository.addProduct(product);
+    }
+
 }

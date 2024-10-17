@@ -17,5 +17,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     public List<Product> getAllProducts() {
         return productDAO.getAllProducts();
     }
-
+    
+    @Override
+    public boolean addProduct(Product product) {
+        return productDAO.addProduct(product);
+    }
 }

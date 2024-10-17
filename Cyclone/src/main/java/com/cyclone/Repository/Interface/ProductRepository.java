@@ -7,4 +7,5 @@ import com.cyclone.Model.Product;
 public interface ProductRepository {
 
     List<Product> getAllProducts();
+    boolean addProduct(Product product);
 }

@@ -7,5 +7,6 @@ import com.cyclone.Model.Product;
 public interface ProductDAO {
 
     List<Product> getAllProducts();
+    boolean addProduct(Product product);
 
 }
