@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -50,15 +50,19 @@
         <!-- Barre de recherche -->
         <div class="mb-4">
             <input id="searchInput" type="text" placeholder="Rechercher un produit..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
-                onkeyup="filterProducts()">
+                onkeyup="   ">
         </div>
 
         <!-- Bouton Ajouter un produit -->
         <div class="mb-4 flex justify-end">
-            <a href="productform.html" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-600">Ajouter un produit</a>
+            <a href="productform" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-600">Ajouter un produit</a>
         </div>
-
-        <!-- Tableau des produits -->
+        <!-- Error message as an alert -->
+        <div th:if="${errorMessage}" class="mt-4 mx-auto max-w-lg bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-center" role="alert">
+            <strong class="font-bold">Erreur!</strong>
+            <span class="block sm:inline" th:text="${errorMessage}"></span>
+        </div>
+          <!-- Tableau des produits -->
         <table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead class="bg-secondary text-white">
                 <tr>
@@ -66,108 +70,47 @@
                     <th class="py-3 px-4 text-left">Description</th>
                     <th class="py-3 px-4 text-right">Prix</th>
                     <th class="py-3 px-4 text-right">Stock</th>
-                    <th class="py-3 px-4 text-center">Type</th>
                     <th class="py-3 px-4 text-center">Actions</th>
                 </tr>
             </thead>
-            <tbody id="productTableBody">
-                <!-- Le contenu du tableau sera généré dynamiquement -->
+            <tbody th:each="product : ${products}">
+                <tr >
+                    <td class="py-3 px-4" th:text="${product.name}"></td>
+                    <td class="py-3 px-4" th:text="${product.description}"></td>
+                    <td class="py-3 px-4 text-right" th:text="${#numbers.formatDecimal(product.price, 1, 2)} + ' €'"></td>
+                    <td class="py-3 px-4 text-right" th:text="${product.stock}"></td>
+                    <td class="py-3 px-4 text-center">
+                        <a th:href="@{/productform(id=${product.id})}" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">Modifier</a>
+                        <a th:href="@{/deleteProduct(id=${product.id})}" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')">Supprimer</a>
+                    </td>
+                </tr>
             </tbody>
         </table>
 
-        <!-- Pagination -->
-        <div class="mt-4 flex justify-center">
-            <nav id="pagination" class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                <!-- Pagination dynamically generated -->
-            </nav>
-        </div>
+        <!-- Error message as an alert -->
+       
     </div>
 
     <script>
-        const products = [
-            { id: 1, name: "Moto Sport", description: "Moto sportive haute performance", price: 12999.99, stock: 10, category: "moto" },
-            { id: 2, name: "Vélo de Route", description: "Vélo de route léger et rapide", price: 1999.99, stock: 25, category: "velo" },
-            { id: 3, name: "Moto Cruiser", description: "Moto cruiser confortable pour les longs trajets", price: 15999.99, stock: 5, category: "moto" },
-            { id: 4, name: "VTT", description: "Vélo tout-terrain robuste", price: 899.99, stock: 30, category: "velo" },
-            { id: 5, name: "Scooter Électrique", description: "Scooter électrique pour la ville", price: 3999.99, stock: 15, category: "moto" },
-        ];
-
-        const itemsPerPage = 3;
-        let currentPage = 1;
-        let filteredProducts = [...products]; // Clone the products array for filtering
-
-        function populateProductTable(page = 1) {
-            const tableBody = document.getElementById('productTableBody');
-            tableBody.innerHTML = '';
-
-            const startIndex = (page - 1) * itemsPerPage;
-            const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
-
-            paginatedProducts.forEach(product => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="py-3 px-4">${product.name}</td>
-                    <td class="py-3 px-4">${product.description}</td>
-                    <td class="py-3 px-4 text-right">${product.price.toFixed(2)} €</td>
-                    <td class="py-3 px-4 text-right">${product.stock}</td>
-                    <td class="py-3 px-4 text-center">${product.category === 'moto' ? 'Moto' : 'Vélo'}</td>
-                    <td class="py-3 px-4 text-center">
-                        <button onclick="showProductForm(${product.id})" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">Modifier</button>
-                        <button onclick="deleteProduct(${product.id})" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Supprimer</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            updatePagination();
-        }
-
-        function updatePagination() {
-            const pagination = document.getElementById('pagination');
-            pagination.innerHTML = '';
-
-            const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-
-            if (totalPages > 1) {
-                for (let i = 1; i <= totalPages; i++) {
-                    const pageLink = document.createElement('a');
-                    pageLink.href = "#";
-                    pageLink.className = `relative inline-flex items-center px-4 py-2 border ${i === currentPage ? 'bg-primary text-white' : 'bg-white text-gray-500 hover:bg-gray-50'} text-sm font-medium`;
-                    pageLink.innerText = i;
-                    pageLink.addEventListener('click', function () {
-                        currentPage = i;
-                        populateProductTable(i);
-                    });
-                    pagination.appendChild(pageLink);
-                }
-            }
-        }
-
         function filterProducts() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            filteredProducts = products.filter(product => product.name.toLowerCase().includes(query) || product.description.toLowerCase().includes(query));
-            currentPage = 1; // Reset to the first page after a new search
-            populateProductTable();
-        }
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.querySelector('table');
+            const rows = table.getElementsByTagName('tr');
 
-        function deleteProduct(id) {
-            if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-                const index = products.findIndex(p => p.id === id);
-                if (index !== -1) {
-                    products.splice(index, 1);
-                    filterProducts(); // Reapply the filter after deleting
+            for (let i = 1; i < rows.length; i++) {
+                const name = rows[i].getElementsByTagName('td')[0];
+                const description = rows[i].getElementsByTagName('td')[1];
+                if (name || description) {
+                    const nameText = name.textContent || name.innerText;
+                    const descriptionText = description.textContent || description.innerText;
+                    if (nameText.toLowerCase().indexOf(filter) > -1 || descriptionText.toLowerCase().indexOf(filter) > -1) {
+                        rows[i].style.display = '';
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
                 }
             }
-        }
-
-        function showProductForm(id) {
-            // Redirect to the product form page with the product ID
-            window.location.href = `productform.html?id=${id}`;
-        }
-
-        // Initialize product table when the page loads
-        window.onload = function () {
-            populateProductTable();
         }
     </script>
 </body>
