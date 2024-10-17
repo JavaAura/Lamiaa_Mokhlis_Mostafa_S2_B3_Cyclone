@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -47,6 +47,13 @@
     </div>
 
     <div class="container mx-auto px-4 py-8">
+    	<h1>Admin Dashboard</h1>
+    	<p>Welcome, <span th:text="${session.loggedInUser.firstName}"></span>!</p>
+    	<p>Role, <span th:text="${session.loggedInUser.role}"></span>!</p>
+    	<form th:action="@{/auth}" method="post">
+    		<input type="hidden" name="action" value="logout">
+    		<button type="submit" class="">Logout</button>
+		</form>
         <h1 class="text-3xl font-bold mb-6 text-secondary">Gestion des Utilisateurs</h1>
 
         <!-- Barre de recherche -->
