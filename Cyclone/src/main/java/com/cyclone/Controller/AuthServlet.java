@@ -49,9 +49,7 @@ public class AuthServlet extends HttpServlet {
     	templateEngine.process("authentication", context, response.getWriter());
     }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+    @Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String action = request.getParameter("action");
