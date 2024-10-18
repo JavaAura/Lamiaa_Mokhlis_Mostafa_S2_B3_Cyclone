@@ -86,7 +86,36 @@ public class OrderServlet extends HttpServlet {
 			handleCreateOrder(request, response);
 		}else if ("updateOrder".equals(action)) {
 			   handleUpdateOrder(request, response);
-		}
+		}else if ("updateOrderAdmin".equals(action)) {
+	        updateOrderStatus(request, response);
+	    }
+	}
+	
+	private void updateOrderStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		  int orderId = Integer.parseInt(request.getParameter("orderId"));
+		    String status = request.getParameter("status");
+
+		    Optional<Order> optionalOrder = orderService.findOrderById(orderId);
+
+		    if (optionalOrder.isPresent()) {
+		        Order order = optionalOrder.get();
+		        int quantity = order.getQuantity();
+		        order.setStatus(OrderStatus.valueOf(status));
+
+		        orderService.modifyOrder(order);
+		        if (OrderStatus.CANCELLED.equals(order.getStatus())) {
+		            if (!order.getProducts().isEmpty()) {
+		                Product product = order.getProducts().get(0);
+		                product.setStock(product.getStock() + quantity);
+		                
+		                productService.updateProduct(product); 
+		            }
+		        }
+		        request.setAttribute("message", "Order status updated successfully.");
+		    } else {
+		        request.setAttribute("errorMessage", "Order not found.");
+		    }
+		    displayOrdersAdmin(request, response);
 	}
 	
     private void displayOrdersAdmin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
