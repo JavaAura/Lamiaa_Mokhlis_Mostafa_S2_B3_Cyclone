@@ -51,15 +51,27 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public User getUserByEmail(String email) {
-		try {
-			TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email",
-					User.class);
-			query.setParameter("email", email);
-			return query.getSingleResult();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+	    try {
+	        TypedQuery<Admin> adminQuery = entityManager.createQuery("SELECT a FROM Admin a WHERE a.email = :email", Admin.class);
+	        adminQuery.setParameter("email", email);
+	        List<Admin> adminResults = adminQuery.getResultList();
+
+	        if (!adminResults.isEmpty()) {
+	            return adminResults.get(0);
+	        } else {
+	            TypedQuery<Client> clientQuery = entityManager.createQuery("SELECT c FROM Client c WHERE c.email = :email", Client.class);
+	            clientQuery.setParameter("email", email);
+	            List<Client> clientResults = clientQuery.getResultList();
+
+	            if (!clientResults.isEmpty()) {
+	                return clientResults.get(0);
+	            }
+	        }
+	        return null;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return null;
+	    }
 	}
 
 	@Override

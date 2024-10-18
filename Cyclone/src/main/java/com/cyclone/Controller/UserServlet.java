@@ -254,7 +254,6 @@ public class UserServlet extends HttpServlet {
 
 	    if (userID != null && !userID.isEmpty()) {
 	        try {
-
 	            Integer userId = Integer.parseInt(userID);
 
 	            boolean deleted = userService.deleteUser(userId);
