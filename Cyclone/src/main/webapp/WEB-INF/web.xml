@@ -16,10 +16,14 @@
     <servlet-class>com.cyclone.Controller.UserServlet</servlet-class>
   </servlet>
   
+    <servlet>
+    <servlet-name>ProductServlet</servlet-name>
+    <servlet-class>com.cyclone.Controller.ProductServlet</servlet-class>
+  </servlet>
   <!-- Servlet mappings -->
   <servlet-mapping>
-    <servlet-name>AuthServlet</servlet-name>
-    <url-pattern>/auth</url-pattern>
+    <servlet-name>ProductServlet</servlet-name>
+    <url-pattern>/Product</url-pattern>
   </servlet-mapping>
   
   <servlet-mapping>
