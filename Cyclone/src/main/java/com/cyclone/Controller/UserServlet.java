@@ -1,10 +1,15 @@
 package com.cyclone.Controller;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
@@ -15,6 +20,7 @@ import com.cyclone.Model.Client;
 import com.cyclone.Model.User;
 import com.cyclone.Model.Enum.Role;
 import com.cyclone.Service.UserService;
+import com.cyclone.Util.PasswordUtils;
 
 /**
  * Servlet implementation class UserServlet
@@ -43,8 +49,16 @@ public class UserServlet extends HttpServlet {
 
     @Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-//		response.getWriter().append("Served at: ").append(request.getContextPath());
+    	HttpSession session = request.getSession(false);
+    	WebContext context = new WebContext(request, response, getServletContext());
+    	
+    	if (session != null) { 
+    		listUsers(request, response);
+	    } else {
+	        context.setVariable("msg", "please log in first!!");
+	        templateEngine.process("authentication", context, response.getWriter());
+	    }
+    	
 	}
 
     @Override
@@ -100,17 +114,45 @@ public class UserServlet extends HttpServlet {
 	    user.setFirstName(firstName);
 	    user.setLastName(lastName);
 	    user.setEmail(email);
-	    user.setPassword(password);
+	    user.setPassword(PasswordUtils.hashPassword(password));
 
 	    try {
 	        userService.createUser(user);
-	        context.setVariable("message", "User created successfully");
-	        context.setVariable("user", user);
-	        templateEngine.process(page, context, response.getWriter());
+	        listUsers(request, response);
 	    } catch (Exception e) {
 	    	context.setVariable("error", "Error while saving user");
 		    templateEngine.process(page, context, response.getWriter());
 	    }
+	}
+	
+	protected void listUsers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
+		WebContext context = new WebContext(request, response, getServletContext());
+	    String page = "admin/userManagement";
+	    
+	    Optional<List<User>> usersOpt = userService.getAllUsers();
+
+	    if(usersOpt.isPresent()) {
+	    	List<User> admins = usersOpt.get().stream()
+                    .filter(user -> user.getRole() == Role.ADMIN)
+                    .collect(Collectors.toList());
+                    
+	    	List<User> clients = usersOpt.get().stream()
+                     .filter(user -> user.getRole() == Role.CLIENT)
+                     .collect(Collectors.toList());
+
+	    	context.setVariable("admins", admins);
+	    	context.setVariable("clients", clients);
+	    	
+	    	
+
+	    	templateEngine.process(page, context, response.getWriter());
+	    }else {
+	    	context.setVariable("admins", null);
+	    	context.setVariable("clients", null);
+	    	context.setVariable("emptyTable", "no users found");
+	    	templateEngine.process(page, context, response.getWriter());
+	    }
+        
 	}
 
 }

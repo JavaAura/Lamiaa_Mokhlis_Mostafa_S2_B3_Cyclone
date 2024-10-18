@@ -39,8 +39,8 @@ public class UserService {
         return userRepository.getUserById(id);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.getAllUsers();
+    public Optional<List<User>> getAllUsers() {
+        return Optional.ofNullable(userRepository.getAllUsers());
     }
 
     public boolean updateUser(User user) {

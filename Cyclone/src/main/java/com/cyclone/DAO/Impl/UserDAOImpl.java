@@ -1,5 +1,6 @@
 package com.cyclone.DAO.Impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -7,6 +8,8 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
 import com.cyclone.DAO.Interface.UserDAO;
+import com.cyclone.Model.Admin;
+import com.cyclone.Model.Client;
 import com.cyclone.Model.User;
 import com.cyclone.Util.JPAUtil;
 
@@ -60,9 +63,21 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public List<User> getAllUsers() {
-        try {
-            TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u", User.class);
-            return query.getResultList();
+    	try {
+            // get all Admin users
+            TypedQuery<Admin> adminQuery = entityManager.createQuery("SELECT a FROM Admin a", Admin.class);
+            List<Admin> admins = adminQuery.getResultList();
+
+            // get all Client users
+            TypedQuery<Client> clientQuery = entityManager.createQuery("SELECT c FROM Client c", Client.class);
+            List<Client> clients = clientQuery.getResultList();
+
+            // Combine both lists
+            List<User> allUsers = new ArrayList<>();
+            allUsers.addAll(admins);
+            allUsers.addAll(clients);
+
+            return allUsers;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

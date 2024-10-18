@@ -74,7 +74,7 @@ public class AuthServlet extends HttpServlet {
 		            session.setAttribute("role", user.getRole());
 
 		            if (user.getRole() == Role.ADMIN) {
-		                templateEngine.process("admin/userManagement", context, response.getWriter());
+		            	response.sendRedirect(request.getContextPath() + "/user");
 		            } else if (user.getRole() == Role.CLIENT) {
 		                templateEngine.process("accueil", context, response.getWriter());
 		            } else {
