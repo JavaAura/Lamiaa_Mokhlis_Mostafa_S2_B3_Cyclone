@@ -54,9 +54,9 @@ public class OrderServlet extends HttpServlet {
 		 
 	        if ("viewClientOrders".equals(action)) {
 	        	   displayClientOrders(request, response);
-	        }/*else if ("".equals(action)){
-	   
-	        }*/else {
+	        }else if ("deleteOrder".equals(action)){
+	            handleDeleteOrder(request, response);
+	        }else {
 	            showOrderButtons(request, response);
 	        }
 	        
@@ -72,6 +72,8 @@ public class OrderServlet extends HttpServlet {
 		 
 		if ("addOrder".equals(action)) {
 			handleCreateOrder(request, response);
+		}else if ("updateOrder".equals(action)) {
+			   handleUpdateOrder(request, response);
 		}
 	}
 
@@ -103,6 +105,45 @@ public class OrderServlet extends HttpServlet {
 	        }else {
 	            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Product ID or quantity is missing");
 	        }*/
+	}
+	
+	private void handleDeleteOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	    try {
+	        int orderId = Integer.parseInt(request.getParameter("id"));
+	        orderService.removeOrder(orderId);
+	        response.sendRedirect(request.getContextPath() + "/orders");
+	    } catch (NumberFormatException e) {
+	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid order ID");
+	    }
+	}
+	
+	private void handleUpdateOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		 try {
+		        int orderId = Integer.parseInt(request.getParameter("orderId"));
+		        Optional<Order> optionalOrder = orderService.findOrderById(orderId);
+		        if (optionalOrder.isPresent()) {
+		            Order existingOrder = optionalOrder.get();
+
+		            String quantityStr = request.getParameter("quantity");
+		            if (quantityStr != null) {
+		                int quantity = Integer.parseInt(quantityStr);
+		                existingOrder.setQuantity(quantity);
+
+		                orderService.modifyOrder(existingOrder);
+		                response.sendRedirect("orders"); 
+		            } else {
+		                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Quantity is missing");
+		            }
+		        } else {
+		            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
+		        }
+
+		    } catch (NumberFormatException e) {
+		        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid quantity or order ID");
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while updating the order");
+		    }
 	}
 	
     private void showOrderButtons(HttpServletRequest request, HttpServletResponse response) throws IOException {
