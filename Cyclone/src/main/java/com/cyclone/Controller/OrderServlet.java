@@ -18,6 +18,7 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.cyclone.Model.Order;
+import com.cyclone.Model.Product;
 import com.cyclone.Model.Enum.OrderStatus;
 import com.cyclone.Service.OrderService;
 
@@ -121,23 +122,36 @@ public class OrderServlet extends HttpServlet {
 		 try {
 		        int orderId = Integer.parseInt(request.getParameter("orderId"));
 		        Optional<Order> optionalOrder = orderService.findOrderById(orderId);
+
 		        if (optionalOrder.isPresent()) {
 		            Order existingOrder = optionalOrder.get();
-
 		            String quantityStr = request.getParameter("quantity");
+
 		            if (quantityStr != null) {
 		                int quantity = Integer.parseInt(quantityStr);
-		                existingOrder.setQuantity(quantity);
-
-		                orderService.modifyOrder(existingOrder);
-		                response.sendRedirect("orders"); 
+		                if ("PENDING".equals(existingOrder.getStatus()) || "PROCESSING".equals(existingOrder.getStatus())) {
+		                	  List<Product> products = existingOrder.getProducts();
+		                      if (products != null && !products.isEmpty()) {
+		                          Product product = products.get(0);
+		                        if (quantity <= product.getStock()) {
+		                            existingOrder.setQuantity(quantity);
+		                            orderService.modifyOrder(existingOrder);
+		                            response.sendRedirect("orders"); 
+		                        } else {
+		                            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Not enough stock available");
+		                        }
+		                    } else {
+		                        response.sendError(HttpServletResponse.SC_NOT_FOUND, "Product not found for this order");
+		                    }
+		                } else {
+		                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Order status must be PENDING or PROCESSING to update the quantity");
+		                }
 		            } else {
 		                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Quantity is missing");
 		            }
 		        } else {
 		            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
 		        }
-
 		    } catch (NumberFormatException e) {
 		        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid quantity or order ID");
 		    } catch (Exception e) {
