@@ -2,8 +2,9 @@
 	package com.cyclone.DAO.Impl;
 
 	import java.util.List;
+import java.util.Optional;
 
-	import javax.persistence.EntityManager;
+import javax.persistence.EntityManager;
 	import javax.persistence.EntityTransaction;
 	import javax.persistence.TypedQuery;
 
@@ -72,6 +73,36 @@
 				return false;
 			}
 		}
+
+		@Override
+		public Optional<Product> getProductById(int id) {
+			try {
+				return Optional.ofNullable(entityManager.find(Product.class, id));
+			} catch (Exception e) {
+				logger.error("Error retrieving product by ID", e);
+				return null;
+			}
+		}
+
+		@Override
+		public boolean updateProduct(Product product) {
+			try {
+				EntityTransaction transaction = entityManager.getTransaction();
+				transaction.begin();
+				entityManager.merge(product);
+				transaction.commit();
+				return true;
+			} catch (Exception e) {
+				logger.error("Error updating product", e);
+				return false;
+			}
+		}
+
+		
+		
+
+
+		
 
 
 	 

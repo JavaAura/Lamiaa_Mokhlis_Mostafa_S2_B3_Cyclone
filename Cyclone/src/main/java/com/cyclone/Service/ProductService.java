@@ -1,6 +1,7 @@
 package com.cyclone.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.cyclone.Model.Product;
 import com.cyclone.Repository.Impl.ProductRepositoryImpl;
@@ -19,6 +20,14 @@ public class ProductService {
 
     public boolean addProduct(Product product) {
         return productRepository.addProduct(product);
+    }
+
+    public Optional<Product> getProductById(int id) {
+        return productRepository.getProductById(id);
+    }
+
+    public boolean updateProduct(Product product) {
+        return productRepository.updateProduct(product);
     }
 
 }
