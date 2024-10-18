@@ -67,6 +67,8 @@ public class OrderServlet extends HttpServlet {
 	            handleDeleteOrder(request, response);
 	        }else if ("viewOrdersAdmin".equals(action)) {
 	        	displayOrdersAdmin(request, response);
+	        }else if ("search".equals(action)){
+	        	
 	        }
 	        else {
 	            showOrderButtons(request, response);
@@ -91,8 +93,18 @@ public class OrderServlet extends HttpServlet {
 	    }
 	}
 	
+	private void searchOrders(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    String searchWord = request.getParameter("search");
+
+	    List<Order> matchingOrders = orderService.getOrdersByClientLastName(searchWord);
+
+	    request.setAttribute("orders", matchingOrders);
+
+	    request.getRequestDispatcher("/WEB-INF/templates/order/AdminOrdersList.html").forward(request, response);
+	}
+	
 	private void updateOrderStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		  int orderId = Integer.parseInt(request.getParameter("orderId"));
+		/*  int orderId = Integer.parseInt(request.getParameter("orderId"));
 		    String status = request.getParameter("status");
 
 		    Optional<Order> optionalOrder = orderService.findOrderById(orderId);
@@ -115,7 +127,7 @@ public class OrderServlet extends HttpServlet {
 		    } else {
 		        request.setAttribute("errorMessage", "Order not found.");
 		    }
-		    displayOrdersAdmin(request, response);
+		    displayOrdersAdmin(request, response);*/
 	}
 	
     private void displayOrdersAdmin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
