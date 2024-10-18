@@ -66,6 +66,9 @@ public class UserServlet extends HttpServlet {
 			case "list":
 				listUsers(request, response);
 				break;
+			case "delete":
+				deleteUser(request, response);
+				break;
 			default:
 				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action");
 				break;
@@ -244,5 +247,32 @@ public class UserServlet extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND, "User not found");
 		}
 	}
+	
+	protected void deleteUser(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	    String userID = request.getParameter("userID");
+
+	    if (userID != null && !userID.isEmpty()) {
+	        try {
+
+	            Integer userId = Integer.parseInt(userID);
+
+	            boolean deleted = userService.deleteUser(userId);
+
+	            if (deleted) {
+	            	listUsers(request, response);
+	            } else {
+	                WebContext context = new WebContext(request, response, getServletContext());
+	                context.setVariable("error", "User not found or could not be deleted.");
+	                listUsers(request, response);
+	            }
+	        } catch (NumberFormatException e) {
+	            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid user ID");
+	        }
+	    } else {
+	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing user ID");
+	    }
+	}
+
 
 }

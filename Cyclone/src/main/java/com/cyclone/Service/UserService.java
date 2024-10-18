@@ -10,44 +10,43 @@ import java.util.Optional;
 
 public class UserService {
 
-    private final UserRepository userRepository;
+	private final UserRepository userRepository;
 
-    public UserService() {
-        this.userRepository = new UserRepositoryImpl();
-    }
+	public UserService() {
+		this.userRepository = new UserRepositoryImpl();
+	}
 
-    public Optional<User> login(String email, String password) {
+	public Optional<User> login(String email, String password) {
 
-        Optional<User> userOpt = userRepository.getUserByEmail(email);
+		Optional<User> userOpt = userRepository.getUserByEmail(email);
 
-        if (userOpt.isPresent()) {
-        	boolean validPassword = PasswordUtils.checkPassword(password, userOpt.get().getPassword());
-        	if(validPassword) {
-        		return userOpt;
-        	}
-        }
-        
+		if (userOpt.isPresent()) {
+			boolean validPassword = PasswordUtils.checkPassword(password, userOpt.get().getPassword());
+			if (validPassword) {
+				return userOpt;
+			}
+		}
 
-        return Optional.empty();
-    }
+		return Optional.empty();
+	}
 
-    public boolean createUser(User user) {
-        return userRepository.saveUser(user);
-    }
+	public boolean createUser(User user) {
+		return userRepository.saveUser(user);
+	}
 
-    public Optional<User> getUserById(int id) {
-        return userRepository.getUserById(id);
-    }
+	public Optional<User> getUserById(int id) {
+		return userRepository.getUserById(id);
+	}
 
-    public Optional<List<User>> getAllUsers() {
-        return Optional.ofNullable(userRepository.getAllUsers());
-    }
+	public Optional<List<User>> getAllUsers() {
+		return Optional.ofNullable(userRepository.getAllUsers());
+	}
 
-    public boolean updateUser(User user) {
-        return userRepository.updateUser(user);
-    }
+	public boolean updateUser(User user) {
+		return userRepository.updateUser(user);
+	}
 
-    public boolean deleteUser(int id) {
-        return userRepository.deleteUser(id);
-    }
+	public boolean deleteUser(int id) {
+		return userRepository.deleteUser(id);
+	}
 }
