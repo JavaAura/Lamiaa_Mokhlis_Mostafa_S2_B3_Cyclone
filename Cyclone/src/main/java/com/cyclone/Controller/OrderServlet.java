@@ -3,7 +3,9 @@ package com.cyclone.Controller;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.RequestDispatcher;
@@ -63,7 +65,10 @@ public class OrderServlet extends HttpServlet {
 	        	   displayClientOrders(request, response);
 	        }else if ("deleteOrder".equals(action)){
 	            handleDeleteOrder(request, response);
-	        }else {
+	        }else if ("viewOrdersAdmin".equals(action)) {
+	        	displayOrdersAdmin(request, response);
+	        }
+	        else {
 	            showOrderButtons(request, response);
 	        }
 	        
@@ -83,6 +88,30 @@ public class OrderServlet extends HttpServlet {
 			   handleUpdateOrder(request, response);
 		}
 	}
+	
+    private void displayOrdersAdmin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Order> orders = orderService.getAllOrders();
+        List<Map<String, Object>> orderDetailsList = new ArrayList<>(); 
+
+      for (Order order : orders) {
+            if (!order.getProducts().isEmpty()) {
+                Product product = order.getProducts().get(0); 
+
+                double totalPrice = product.getPrice() * order.getQuantity(); 
+
+                Map<String, Object> orderDetail = new HashMap<>();
+                orderDetail.put("order", order); 
+                orderDetail.put("productName", product.getName()); 
+                orderDetail.put("totalPrice", totalPrice); 
+                
+                orderDetailsList.add(orderDetail); 
+            }
+        }
+
+        request.setAttribute("orderDetails", orderDetailsList); 
+        request.getRequestDispatcher("/WEB-INF/templates/order/AdminOrdersList.html").forward(request, response);
+    }
+    
 
 	private void handleCreateOrder(HttpServletRequest request, HttpServletResponse response) {
 	/*	 try {

@@ -6,11 +6,15 @@
 </head>
 <body>
       <a th:href="@{/orders(action='viewClientOrders', clientId=1)}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">
-        Afficher la liste des commandes
+        Afficher ma liste des commandes
     </a>
     
      <a th:href="@{/orders(action='addOrder', clientId=1)}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mt-4">
         Ajouter une commande
     </a>
+      <a th:href="@{/orders(action='viewOrdersAdmin')}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mt-4">
+       list orders  for admin
+    </a>
+    
 </body>
 </html>
