@@ -12,3 +12,17 @@
 00:13:22.517 [main] INFO  org.hibernate.orm.connections.access - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@22367b8] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
 00:13:22.608 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
 00:13:22.622 [main] INFO  com.cyclone.Util.JPAUtil - EntityManagerFactory created successfully.
+14:47:26.440 [main] INFO  com.cyclone.Util.JPAUtil - Attempting to create EntityManagerFactory...
+14:47:26.557 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: cycloneJPA]
+14:47:26.635 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 5.6.10.Final
+14:47:26.714 [main] INFO  o.h.annotations.common.Version - HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+14:47:27.070 [main] WARN  o.hibernate.orm.connections.pooling - HHH10001002: Using Hibernate built-in connection pool (not for production use!)
+14:47:27.078 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: using driver [org.postgresql.Driver] at URL [jdbc:postgresql://localhost:5432/cyclone]
+14:47:27.080 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001001: Connection properties: {user=postgres, password=****}
+14:47:27.080 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001003: Autocommit mode: false
+14:47:27.085 [main] INFO  o.h.e.j.c.i.DriverManagerConnectionProviderImpl - HHH000115: Hibernate connection pool size: 20 (min=1)
+14:47:27.480 [main] INFO  org.hibernate.dialect.Dialect - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+14:47:27.899 [main] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 6.1.5.Final
+14:47:28.248 [main] INFO  org.hibernate.orm.connections.access - HHH10001501: Connection obtained from JdbcConnectionAccess [org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator$ConnectionProviderJdbcConnectionAccess@6c0e13b7] for (non-JTA) DDL execution was not in auto-commit mode; the Connection 'local transaction' will be committed and the Connection will be set into auto-commit mode.
+14:47:28.331 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+14:47:28.341 [main] INFO  com.cyclone.Util.JPAUtil - EntityManagerFactory created successfully.

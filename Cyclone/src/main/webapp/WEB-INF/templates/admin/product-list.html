@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Produits</title>
+    <title>Product Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -37,39 +37,39 @@
     <div class="bg-primary">
         <div class="container mx-auto px-4">
             <ul class="flex justify-center space-x-6 py-4">
-                <li><a href="accueil.html" class="text-white font-bold hover:text-secondary">Accueil</a></li>
-                <li><a href="produits.html" class="text-white font-bold hover:text-secondary">Produits</a></li>
+                <li><a href="home.html" class="text-white font-bold hover:text-secondary">Home</a></li>
+                <li><a href="products.html" class="text-white font-bold hover:text-secondary">Products</a></li>
                 <li><a href="contact.html" class="text-white font-bold hover:text-secondary">Contact</a></li>
             </ul>
         </div>
     </div>
 
     <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-6 text-secondary">Gestion des Produits</h1>
+        <h1 class="text-3xl font-bold mb-6 text-secondary">Product Management</h1>
 
-        <!-- Barre de recherche -->
+        <!-- Search bar -->
         <div class="mb-4">
-            <input id="searchInput" type="text" placeholder="Rechercher un produit..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary">
+            <input id="searchInput" type="text" placeholder="Search for a product..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary">
         </div>
 
-        <!-- Bouton Ajouter un produit -->
+        <!-- Add product button -->
         <div class="mb-4 flex justify-end">
-            <a href="?action=showForm" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-600">Ajouter un produit</a>
+            <a href="?action=showForm" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-600">Add a product</a>
         </div>
 
         <!-- Error message as an alert -->
         <div th:if="${errorMessage}" class="mt-4 mx-auto max-w-lg bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-center" role="alert">
-            <strong class="font-bold">Erreur!</strong>
+            <strong class="font-bold">Error !</strong>
             <span class="block sm:inline" th:text="${errorMessage}"></span>
         </div>
 
-        <!-- Tableau des produits -->
+        <!-- Product table -->
         <table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead class="bg-secondary text-white">
                 <tr>
-                    <th class="py-3 px-4 text-left">Nom</th>
+                    <th class="py-3 px-4 text-left">Name</th>
                     <th class="py-3 px-4 text-left">Description</th>
-                    <th class="py-3 px-4 text-right">Prix</th>
+                    <th class="py-3 px-4 text-right">Price</th>
                     <th class="py-3 px-4 text-right">Stock</th>
                     <th class="py-3 px-4 text-center">Actions</th>
                 </tr>
@@ -81,8 +81,12 @@
                     <td class="py-3 px-4 text-right" th:text="${#numbers.formatDecimal(product.price, 1, 2)} + ' €'"></td>
                     <td class="py-3 px-4 text-right" th:text="${product.stock}"></td>
                     <td class="py-3 px-4 text-center">
-                        <a th:href="@{/Product(action=showFormUpdate, id=${product.id})}" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">Modifier</a>
-                        <a th:href="@{/Product(action=delete, id=${product.id})}" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')">Supprimer</a>
+                        <a th:href="@{/Product(action=showFormUpdate, id=${product.id})}" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">Edit</a>
+                        <form th:action="@{/Product}" method="post" class="inline-block" onsubmit="return confirm('Are you sure you want to delete ' + this.getAttribute('data-product-name') + '?');" th:data-product-name="${product.name}">
+                            <input type="hidden" name="action" value="delete">
+                            <input type="hidden" name="id" th:value="${product.id}">
+                            <button type="submit" class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Delete</button>
+                        </form>
                     </td>
                 </tr>
             </tbody>
@@ -90,13 +94,14 @@
 
         <!-- Pagination controls -->
         <div class="mt-4 flex justify-center">
-            <button id="prevPage" class="bg-secondary text-white px-4 py-2 rounded-lg mr-2 hover:bg-gray-700">Précédent</button>
-            <span id="pageInfo" class="px-4 py-2">Page <span id="currentPage"></span> sur <span id="totalPages"></span></span>
-            <button id="nextPage" class="bg-secondary text-white px-4 py-2 rounded-lg ml-2 hover:bg-gray-700">Suivant</button>
+            <button id="prevPage" class="bg-secondary text-white px-4 py-2 rounded-lg mr-2 hover:bg-gray-700">Previous</button>
+            <span id="pageInfo" class="px-4 py-2">Page <span id="currentPage"></span> of <span id="totalPages"></span></span>
+            <button id="nextPage" class="bg-secondary text-white px-4 py-2 rounded-lg ml-2 hover:bg-gray-700">Next</button>
         </div>
     </div>
 
     <script>
+        // ... (JavaScript remains the same, only translating comments)
         let currentPage = 1;
         const itemsPerPage = 5;
         let filteredProducts = [];
@@ -137,7 +142,15 @@
             const productsToShow = filteredProducts.slice(startIndex, endIndex);
 
             productsToShow.forEach(product => {
-                tableBody.appendChild(product.cloneNode(true));
+                const clonedProduct = product.cloneNode(true);
+                // Reattach event listener for delete form
+                const deleteForm = clonedProduct.querySelector('form');
+                if (deleteForm) {
+                    deleteForm.onsubmit = function() {
+                        return confirm('Are you sure you want to delete ' + this.getAttribute('data-product-name') + '?');
+                    };
+                }
+                tableBody.appendChild(clonedProduct);
             });
         }
 

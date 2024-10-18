@@ -73,7 +73,12 @@ import javax.persistence.EntityManager;
 				return false;
 			}
 		}
-
+		/**
+		 * Retrieves a product by its ID.
+		 *
+		 * @param id The ID of the product to retrieve.
+		 * @return An Optional containing the Product entity if found, or empty if not found or an error occurs.
+		 */
 		@Override
 		public Optional<Product> getProductById(int id) {
 			try {
@@ -83,7 +88,12 @@ import javax.persistence.EntityManager;
 				return null;
 			}
 		}
-
+		/**
+		 * Updates an existing product in the database.
+		 *
+		 * @param product The Product entity to be updated.
+		 * @return true if the product was updated successfully, false otherwise.
+		 */
 		@Override
 		public boolean updateProduct(Product product) {
 			try {
@@ -97,9 +107,26 @@ import javax.persistence.EntityManager;
 				return false;
 			}
 		}
+		/**
+		 * Deletes a product by its ID.
+		 *
+		 * @param id The ID of the product to delete.
+		 * @return true if the product was deleted successfully, false otherwise.
+		 */
 
-		
-		
+		@Override
+		public boolean deleteProduct(int id) {
+			try {
+				EntityTransaction transaction = entityManager.getTransaction();
+				transaction.begin();
+				entityManager.remove(entityManager.find(Product.class, id));
+				transaction.commit();
+				return true; 
+			} catch (Exception e) {
+				logger.error("Error deleting product", e);
+				return false;
+			}
+		}
 
 
 		

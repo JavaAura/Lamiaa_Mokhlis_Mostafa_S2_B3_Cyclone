@@ -48,6 +48,9 @@ public class ProductServlet extends HttpServlet {
 		this.productService = new ProductService();
 	}
 
+	/**
+	 * Initializes the servlet, setting up the Thymeleaf template engine and the validator.
+	 */
 	@Override
 	public void init() {
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(this.getServletContext());
@@ -63,13 +66,17 @@ public class ProductServlet extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Handles GET requests to the servlet.
+	 * @param request The HTTP servlet request
+	 * @param response The HTTP servlet response
+	 * @throws ServletException If the request for the GET could not be handled
+	 * @throws IOException If an input or output error is detected when the servlet handles the GET request
 	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+		response.setContentType("text/html; charset=UTF-8");
 
 		String action = request.getParameter("action");
 		logger.info("Action: " + action);
@@ -95,12 +102,19 @@ public class ProductServlet extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * Handles POST requests to the servlet.
+	 * @param request The HTTP servlet request
+	 * @param response The HTTP servlet response
+	 * @throws ServletException If the request for the POST could not be handled
+	 * @throws IOException If an input or output error is detected when the servlet handles the POST request
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		request.setCharacterEncoding(StandardCharsets.UTF_8.name());
+		response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+		response.setContentType("text/html; charset=UTF-8");
+
 		String action = request.getParameter("action");
 		logger.info("Action: " + action);
 
@@ -111,12 +125,22 @@ public class ProductServlet extends HttpServlet {
 		case "update":
 			updateProduct(request, response);
 			break;
+		case "delete":
+			deleteProduct(request, response);
+			break;
 		default:
 			getAllProducts(request, response);
 			break;
 		}
 	}
 
+	/**
+	 * Retrieves all products and displays them in a list.
+	 * @param request The HTTP servlet request
+	 * @param response The HTTP servlet response
+	 * @throws ServletException If the request for the GET could not be handled
+	 * @throws IOException If an input or output error is detected when the servlet handles the GET request
+	 */
 	public void getAllProducts(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		List<Product> products = productService.getAllProducts();
@@ -133,9 +157,18 @@ public class ProductServlet extends HttpServlet {
 			}
 		}
 
-		templateEngine.process("admin/Liste-produits", context, response.getWriter());
+		response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+		response.setContentType("text/html; charset=UTF-8");
+		templateEngine.process("admin/product-list", context, response.getWriter());
 	}
 
+	/**
+	 * Adds a new product to the database.
+	 * @param request The HTTP servlet request
+	 * @param response The HTTP servlet response
+	 * @throws ServletException If the request for the POST could not be handled
+	 * @throws IOException If an input or output error is detected when the servlet handles the POST request
+	 */
 	public void addProduct(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		logger.info("addProduct");
@@ -146,11 +179,9 @@ public class ProductServlet extends HttpServlet {
 		String priceStr = request.getParameter("price");
 		String stockStr = request.getParameter("stock");
 
-		// Vérifier si les champs requis sont présents et non vides
 		if (name == null || name.trim().isEmpty() || description == null || description.trim().isEmpty()
 				|| priceStr == null || priceStr.trim().isEmpty() || stockStr == null || stockStr.trim().isEmpty()) {
 
-			// Gérer les paramètres manquants ou vides
 			WebContext context = new WebContext(request, response, getServletContext());
 			context.setVariable("errorMessage", "All fields are required and cannot be empty");
 			Product product = new Product();
@@ -162,7 +193,6 @@ public class ProductServlet extends HttpServlet {
 		}
 
 		try {
-			// Convertir price et stock en utilisant trim() pour éliminer les espaces
 			price = Double.parseDouble(priceStr.trim());
 			stock = Integer.parseInt(stockStr.trim());
 
@@ -198,19 +228,32 @@ public class ProductServlet extends HttpServlet {
 				templateEngine.process("admin/productform", context, response.getWriter());
 			}
 		} catch (NumberFormatException e) {
-			// Gérer le format de nombre invalide
 			WebContext context = new WebContext(request, response, getServletContext());
 			context.setVariable("errorMessage", "Invalid price or stock value. Please enter valid numbers.");
 			templateEngine.process("admin/productform", context, response.getWriter());
 		}
 	}
 
+	/**
+	 * Displays the form for adding a new product.
+	 * @param request The HTTP servlet request
+	 * @param response The HTTP servlet response
+	 * @throws ServletException If the request for the GET could not be handled
+	 * @throws IOException If an input or output error is detected when the servlet handles the GET request
+	 */
 	public void showAddProductForm(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		WebContext context = new WebContext(request, response, getServletContext());
 		templateEngine.process("admin/productform", context, response.getWriter());
 	}
 
+	/**
+	 * Displays the form for updating an existing product.
+	 * @param request The HTTP servlet request
+	 * @param response The HTTP servlet response
+	 * @throws ServletException If the request for the GET could not be handled
+	 * @throws IOException If an input or output error is detected when the servlet handles the GET request
+	 */
 	public void showUpdateProductForm(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		int id = Integer.parseInt(request.getParameter("id"));
@@ -222,6 +265,13 @@ public class ProductServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Updates an existing product in the database.
+	 * @param request The HTTP servlet request
+	 * @param response The HTTP servlet response
+	 * @throws ServletException If the request for the POST could not be handled
+	 * @throws IOException If an input or output error is detected when the servlet handles the POST request
+	 */
 	public void updateProduct(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		int id = Integer.parseInt(request.getParameter("id"));
@@ -234,7 +284,6 @@ public class ProductServlet extends HttpServlet {
 			String priceStr = request.getParameter("price");
 			String stockStr = request.getParameter("stock");
 
-			// Vérifier si les champs requis sont présents et non vides
 			if (name == null || name.trim().isEmpty() || description == null || description.trim().isEmpty()
 					|| priceStr == null || priceStr.trim().isEmpty() || stockStr == null || stockStr.trim().isEmpty()) {
 
@@ -291,6 +340,26 @@ public class ProductServlet extends HttpServlet {
 			WebContext context = new WebContext(request, response, getServletContext());
 			context.setVariable("errorMessage", "Product not found");
 			templateEngine.process("admin/productUpdate", context, response.getWriter());
+		}
+	}
+
+	/**
+	 * Deletes a product from the database.
+	 * @param request The HTTP servlet request
+	 * @param response The HTTP servlet response
+	 * @throws ServletException If the request for the POST could not be handled
+	 * @throws IOException If an input or output error is detected when the servlet handles the POST request
+	 */
+	public void deleteProduct(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		int id = Integer.parseInt(request.getParameter("id"));
+		boolean result = productService.deleteProduct(id);
+		if (result) {
+			doGet(request, response);
+		} else {
+			WebContext context = new WebContext(request, response, getServletContext());
+			context.setVariable("errorMessage", "Failed to delete product");
+			templateEngine.process("admin/Liste-produits", context, response.getWriter());
 		}
 	}
 }
