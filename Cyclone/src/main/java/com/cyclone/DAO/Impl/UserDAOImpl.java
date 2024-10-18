@@ -51,7 +51,6 @@ public class UserDAOImpl implements UserDAO {
         try {
             TypedQuery<User> query = entityManager.createQuery("SELECT u FROM User u WHERE u.email = :email", User.class);
             query.setParameter("email", email);
-            System.out.println("user:"+query.getSingleResult());
             return query.getSingleResult();
         } catch (Exception e) {
             e.printStackTrace();
