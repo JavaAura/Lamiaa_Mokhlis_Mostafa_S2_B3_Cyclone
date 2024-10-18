@@ -49,9 +49,8 @@ public class OrderRepositoryImpl implements OrderRepository{
 	    @Override
 	    public List<Order> getOrdersByClient(int clientId) {
 	    	try {
-	            List<Order> orders = entityManager.createQuery("SELECT o FROM Order o WHERE o.client.id = :clientId", Order.class)
-	                                               .setParameter("clientId", clientId)
-	                                               .getResultList();
+	            List<Order> orders = entityManager.createQuery("SELECT o FROM Order o WHERE 				o.client.id = :clientId", Order.class) .setParameter("clientId", clientId)
+ .getResultList();
 	            System.out.println("Executing query for client ID: " + clientId);
 
 	            System.out.println("Fetched orders for client ID " + clientId + ": " + orders.size());
@@ -63,6 +62,26 @@ public class OrderRepositoryImpl implements OrderRepository{
 	        }
 	    }
 	    
+	    @Override
+	    public List<Order> getOrdersWithPagination(int offset, int pageSize) {
+	        return entityManager.createQuery("SELECT o FROM Order o", Order.class)
+	                .setFirstResult(offset)
+	                .setMaxResults(pageSize)
+	                .getResultList();
+	    }
+	    
+	    @Override
+	    public int getTotalOrderCount() {
+	        try {
+	            Long count = entityManager.createQuery("SELECT COUNT(o) FROM Order o", Long.class)
+	                .getSingleResult();
+	            return count.intValue();
+	        } catch (Exception e) {
+	            System.out.println("Error fetching total order count: " + e.getMessage());
+	            e.printStackTrace();
+	            return 0; 
+	        }
+	    }
 	    
 
 }

@@ -131,7 +131,20 @@ public class OrderServlet extends HttpServlet {
 	}
 	
     private void displayOrdersAdmin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Order> orders = orderService.getAllOrders();
+    	 int page = 1;
+    	    String pageParam = request.getParameter("page");
+    	    if (pageParam != null && !pageParam.isEmpty()) {
+    	        try {
+    	            page = Integer.parseInt(pageParam);
+    	        } catch (NumberFormatException e) {
+    	            page = 1; 
+    	        }
+    	    }
+    	    int pageSize = 10; 
+    	    int offset = (page - 1) * pageSize;
+    	List<Order> orders = orderService.getOrdersWithPagination(offset, pageSize);
+    	int totalOrders = orderService.getTotalOrderCount();				
+        int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
         List<Map<String, Object>> orderDetailsList = new ArrayList<>(); 
 
       for (Order order : orders) {
@@ -150,6 +163,8 @@ public class OrderServlet extends HttpServlet {
         }
 
         request.setAttribute("orderDetails", orderDetailsList); 
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("/WEB-INF/templates/order/AdminOrdersList.html").forward(request, response);
     }
     

@@ -17,4 +17,6 @@ public interface OrderRepository {
 	    void removeOrder(int id);
 	    
 	    List<Order> getOrdersByClient(int clientId);
+	    List<Order> getOrdersWithPagination(int offset, int pageSize) ;
+	    int getTotalOrderCount();
 }

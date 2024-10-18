@@ -64,5 +64,12 @@ private final Map<Integer, Order> orderMap=new HashMap<>();
     		    return searchedOrders;
     }
     
+    public List<Order> getOrdersWithPagination(int offset, int pageSize) {
+        return orderRepository.getOrdersWithPagination(offset, pageSize);
+    }
+    
+    public int getTotalOrderCount() {
+        return orderRepository.getTotalOrderCount();
+    }
       
 }
