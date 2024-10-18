@@ -19,8 +19,10 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.cyclone.Model.Order;
 import com.cyclone.Model.Product;
+import com.cyclone.Model.User;
 import com.cyclone.Model.Enum.OrderStatus;
 import com.cyclone.Service.OrderService;
+import com.cyclone.Service.UserService;
 
 /**
  * Servlet implementation class OrderServlet
@@ -30,11 +32,15 @@ public class OrderServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
 	private OrderService orderService;
+	//private ProductService productService;
+	private UserService userService;
     /**
      * @see HttpServlet#HttpServlet()
      */
     public OrderServlet() {
     	  orderService = new OrderService();
+    	//  productService = new ProductService();
+    	  userService = new UserService();
     }
 
     @Override
@@ -79,47 +85,97 @@ public class OrderServlet extends HttpServlet {
 	}
 
 	private void handleCreateOrder(HttpServletRequest request, HttpServletResponse response) {
-	/*	OrderService orderService = new OrderService(); 
-		int clientId = Integer.parseInt(request.getParameter("clientId"));
-		  UserService userService = new UserService();
-	      client = userService.findUserById(clientId);
-	      Order newOrder = new Order();
-	        newOrder.setClient(client); 
-	        newOrder.setOrderDate(LocalDate.now());
-	        String productIdStr = request.getParameter("productId"); 
-	        String quantityStr = request.getParameter("quantity");
-	        if (productIdStr != null && quantityStr != null) {
-	            int productId = Integer.parseInt(productIdStr);
-	            int quantity = Integer.parseInt(quantityStr);
-	            ProductService productService = new ProductService(); 
-	            Product product = productService.findProductById(productId);
-	            if (product != null) {
-	                newOrder.setProduct(product); 
-	                newOrder.setQuantity(quantity); 
+	/*	 try {
+		        int clientId = Integer.parseInt(request.getParameter("clientId"));
+		        User client = userService.findUserById(clientId);
 
-	                OrderService orderService = new OrderService();
-	                orderService.addOrder(newOrder);
+		        if (client == null) {
+		            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Client not found");
+		            return;
+		        }
 
-	            }else {
-	                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Product not found");
-	            }
-	        }else {
-	            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Product ID or quantity is missing");
-	        }*/
+		        Order newOrder = new Order();
+		        newOrder.setClient(client); 
+		        newOrder.setOrderDate(LocalDate.now());
+
+		        String productIdStr = request.getParameter("productId"); 
+		        String quantityStr = request.getParameter("quantity");
+
+		        if (productIdStr != null && quantityStr != null) {
+		            int productId = Integer.parseInt(productIdStr);
+		            int quantity = Integer.parseInt(quantityStr);
+
+		            Product product = productService.findProductById(productId);
+
+		            if (product != null) {
+		                if (quantity <= product.getStock()) {
+		                    newOrder.addProduct(product); 
+		                    newOrder.setQuantity(quantity); 
+		                    orderService.addOrder(newOrder);
+		                    
+		                    product.decrementStock(quantity);
+		                    
+		                    productService.updateProduct(product);
+		                    
+		                    response.sendRedirect("orders");
+		                } else {
+		                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Not enough stock available for this product");
+		                }
+		            } else {
+		                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Product not found");
+		            }
+		        } else {
+		            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Product ID or quantity is missing");
+		        }
+		    } catch (NumberFormatException e) {
+		        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid quantity or client ID");
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while creating the order");
+		    }*/
 	}
 	
 	private void handleDeleteOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
-	    try {
-	        int orderId = Integer.parseInt(request.getParameter("id"));
-	        orderService.removeOrder(orderId);
-	        response.sendRedirect(request.getContextPath() + "/orders");
-	    } catch (NumberFormatException e) {
-	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid order ID");
-	    }
+		/*  try {
+		        int orderId = Integer.parseInt(request.getParameter("id"));
+		        Optional<Order> optionalOrder = orderService.findOrderById(orderId);
+
+		        if (optionalOrder.isPresent()) {
+		            Order orderToDelete = optionalOrder.get();
+		            
+		            if ("PENDING".equals(orderToDelete.getStatus()) || "PROCESSING".equals(orderToDelete.getStatus())) {
+		                List<Product> products = orderToDelete.getProducts();
+		                
+		                if (products != null && !products.isEmpty()) {
+		                    Product product = products.get(0);
+		                    int quantityToRestore = orderToDelete.getQuantity();
+		                    
+		                    product.incrementStock(quantityToRestore);
+		                    
+		                    productService.updateProduct(product);
+		                    
+		                    orderService.removeOrder(orderId);
+		                    
+		                    response.sendRedirect(request.getContextPath() + "/orders");
+		                } else {
+		                    response.sendError(HttpServletResponse.SC_NOT_FOUND, "No products found for this order");
+		                }
+		            } else {
+		                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Cannot delete order with status: " + orderToDelete.getStatus());
+		            }
+		        } else {
+		            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
+		        }
+		    } catch (NumberFormatException e) {
+		        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid order ID");
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while deleting the order");
+		    }*/
 	}
 	
 	private void handleUpdateOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		 try {
+	/*	 try {
 		        int orderId = Integer.parseInt(request.getParameter("orderId"));
 		        Optional<Order> optionalOrder = orderService.findOrderById(orderId);
 
@@ -136,6 +192,11 @@ public class OrderServlet extends HttpServlet {
 		                        if (quantity <= product.getStock()) {
 		                            existingOrder.setQuantity(quantity);
 		                            orderService.modifyOrder(existingOrder);
+		                            
+		                            product.decrementStock(quantity);
+		                            
+		                            productService.updateProduct(product);
+
 		                            response.sendRedirect("orders"); 
 		                        } else {
 		                            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Not enough stock available");
@@ -157,7 +218,7 @@ public class OrderServlet extends HttpServlet {
 		    } catch (Exception e) {
 		        e.printStackTrace();
 		        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while updating the order");
-		    }
+		    }*/
 	}
 	
     private void showOrderButtons(HttpServletRequest request, HttpServletResponse response) throws IOException {
