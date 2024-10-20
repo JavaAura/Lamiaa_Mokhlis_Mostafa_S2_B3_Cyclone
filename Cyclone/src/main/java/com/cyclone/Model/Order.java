@@ -30,7 +30,7 @@ public class Order {
     @Column(nullable = false)
     private OrderStatus status;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "clientID", nullable = false)
     @NotNull(message = "Client cannot be null")
     private User client;
@@ -103,4 +103,17 @@ public class Order {
         this.products = products;
     }
 
+    public void addProduct(Product product) {
+        this.products.add(product); 
+    }
+    
+    @Override
+    public String toString() {
+        return "Order{id=" + id + 
+               ", orderDate=" + orderDate + 
+               ", quantity=" + quantity + 
+               ", status=" + status + 
+               ", clientId=" + client.getId() + 
+               "}";
+    }
 }
