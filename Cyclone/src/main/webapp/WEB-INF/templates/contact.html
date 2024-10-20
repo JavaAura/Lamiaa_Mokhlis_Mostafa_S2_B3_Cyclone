@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -83,7 +83,7 @@
                     <h2 class="text-3xl font-bold mb-4 text-primary">Notre Marque</h2>
                     <p class="mb-4 text-gray-700">Cyclone est votre destination ultime pour les vélos et motos de haute qualité. Nous nous engageons à fournir des produits exceptionnels et un service client inégalé.</p>
                    
-                    <img src="y.webp" alt="Cyclone showroom" class="rounded-lg shadow-md">
+                        <img th:src="@{/templates/y.webp}" alt="Cyclone showroom" class="rounded-lg shadow-md">
                 </div>
             </div>
             
