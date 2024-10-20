@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
@@ -37,117 +37,36 @@
     <div class="bg-primary">
         <div class="container mx-auto px-4">
             <ul class="flex justify-center space-x-6 py-4">
-                <li><a href="accueil.html" class="text-white font-bold hover:text-secondary">Accueil</a></li>
-                <li><a href="produits.html" class="text-white font-bold hover:text-secondary">Produits</a></li>
-                <li><a href="contact.html" class="text-white font-bold hover:text-secondary">Contact</a></li>
+                <li><a th:href="@{/Page(action='home')}" class="text-white font-bold hover:text-secondary">Home</a></li>
+                <li><a th:href="@{/Page(action='product')}" class="text-white font-bold hover:text-secondary">Products</a></li>
+                <li><a th:href="@{/Page(action='contact')}" class="text-white font-bold hover:text-secondary">Contact</a></li>
             </ul>
         </div>
     </div>
 
     <div class="container mx-auto px-4 py-8">
         <div id="productDetails" class="bg-white rounded-lg shadow-md overflow-hidden">
-            <!-- Le contenu du produit sera généré dynamiquement ici -->
-        </div>
-    </div>
-
-    <!-- Ajout du modal pour la confirmation d'achat -->
-    <div id="purchaseModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center">
-        <div class="bg-white p-8 rounded-lg shadow-xl">
-            <h2 class="text-2xl font-bold mb-4">Confirmer l'achat</h2>
-            <p class="mb-4">Vous êtes sur le point d'acheter : <span id="modalProductName"></span></p>
-            <div class="mb-4">
-                <label for="quantity" class="block mb-2">Quantité :</label>
-                <input type="number" id="quantity" min="1" value="1" class="border rounded px-2 py-1 w-full">
-            </div>
-            <div class="flex justify-end space-x-4">
-                <button id="cancelPurchase" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Annuler</button>
-                <button id="confirmPurchase" class="px-4 py-2 bg-primary text-white rounded hover:bg-red-600">Confirmer</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Simulons la récupération des détails du produit depuis une API ou une base de données
-        const product = {
-            id: 1,
-            name: "Moto Sport",
-            description: "Moto sportive haute performance pour les amateurs de vitesse et de sensations fortes. Équipée des dernières technologies pour une conduite optimale sur route et sur circuit.",
-            price: 12999.99,
-            stock: 10,
-            category: "moto",
-            image: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
-            features: [
-                "Moteur 1000cc",
-                "Puissance de 200 chevaux",
-                "Freins à disque Brembo",
-                "Suspension réglable",
-                "Système d'échappement sport"
-            ]
-        };
-
-        function populateProductDetails() {
-            const detailsContainer = document.getElementById('productDetails');
-            detailsContainer.innerHTML = `
-                <div class="md:flex">
-                    <div class="md:w-1/2">
-                        <img src="${product.image}" alt="${product.name}" class="w-full h-auto object-cover">
-                    </div>
-                    <div class="md:w-1/2 p-6">
-                        <h1 class="text-3xl font-bold mb-4">${product.name}</h1>
-                        <p class="text-gray-600 mb-4">${product.description}</p>
-                        <div class="mb-4">
-                            <span class="text-2xl font-bold text-primary">${product.price.toFixed(2)} €</span>
-                        </div>
-                        <div class="mb-4">
-                            <span class="font-semibold">Disponibilité :</span> 
-                            <span class="${product.stock > 0 ? 'text-green-600' : 'text-red-600'}">
-                                ${product.stock > 0 ? 'En stock' : 'Rupture de stock'}
-                            </span>
-                        </div>
-                        <div class="mb-4">
-                            <h2 class="text-xl font-semibold mb-2">Caractéristiques :</h2>
-                            <ul class="list-disc list-inside">
-                                ${product.features.map(feature => `<li>${feature}</li>`).join('')}
-                            </ul>
-                        </div>
-                        <button id="addToCartBtn" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-red-600 transition duration-300">
-                            Ajouter au panier
-                        </button>
-                    </div>
+            <div class="md:flex">
+                <div class="md:w-1/2">
+                    <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80" th:alt="${product.name}" class="w-full h-auto object-cover">
                 </div>
-            `;
-
-            // Ajout de l'écouteur d'événement pour le bouton "Ajouter au panier"
-            document.getElementById('addToCartBtn').addEventListener('click', openPurchaseModal);
-        }
-
-        function openPurchaseModal() {
-            const modal = document.getElementById('purchaseModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.getElementById('modalProductName').textContent = product.name;
-        }
-
-        function closePurchaseModal() {
-            const modal = document.getElementById('purchaseModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        function confirmPurchase() {
-            const quantity = document.getElementById('quantity').value;
-            alert(`Achat confirmé ! Vous avez acheté ${quantity} ${product.name}.`);
-            closePurchaseModal();
-        }
-
-        window.onload = function () {
-            populateProductDetails();
-
-            // Ajout des écouteurs d'événements pour le modal
-            document.getElementById('cancelPurchase').addEventListener('click', closePurchaseModal);
-            document.getElementById('confirmPurchase').addEventListener('click', confirmPurchase);
-        }
-    </script>
+                <div class="md:w-1/2 p-6">
+                    <h1 class="text-3xl font-bold mb-4" th:text="${product.name}"></h1>
+                    <p class="text-gray-600 mb-4" th:text="${product.description}"></p>
+                    <div class="mb-4">
+                        <span class="text-2xl font-bold text-primary" th:text="${#numbers.formatDecimal(product.price, 1, 2)} + ' €'"></span>
+                    </div>
+                    <div class="mb-4">
+                        <span class="font-semibold">Disponibilité :</span> 
+                        <span th:class="${product.stock > 0 ? 'text-green-600' : 'text-red-600'}" th:text="${product.stock > 0 ? 'En stock (' + product.stock + ')' : 'Rupture de stock'}"></span>
+                    </div>
+                    <button id="addToCartBtn" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-red-600 transition duration-300">
+                        Ajouter au panier
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

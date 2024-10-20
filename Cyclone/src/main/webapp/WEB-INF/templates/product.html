@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Products</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF0000',
+                        secondary: '#000000',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100">
+    <!-- Top navbar -->
+    <nav class="bg-secondary text-white">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="text-2xl font-bold">
+                <span class="text-primary">C</span>yclone
+            </div>
+            <div>
+                878-9674-4455
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu navbar -->
+        <div class="bg-primary">
+            <div class="container mx-auto px-4">
+                <ul class="flex justify-center space-x-6 py-4">
+                    <li><a th:href="@{/Page(action='home')}" class="text-white font-bold hover:text-secondary">Home</a></li>
+                    <li><a th:href="@{/Page(action='product')}" class="text-white font-bold hover:text-secondary">Products</a></li>
+                    <li><a th:href="@{/Page(action='contact')}" class="text-white font-bold hover:text-secondary">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-6 text-secondary">Our Products</h1>
+
+        <!-- Search bar -->
+        <div class="mb-4">
+            <input id="searchInput" type="text" placeholder="Search for a product..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary">
+        </div>
+
+        <!-- Product grid -->
+        <div id="productGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Product items will be dynamically inserted here -->
+        </div>
+
+        <!-- Pagination -->
+        <div class="mt-8 flex justify-center">
+            <nav id="pagination" class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <!-- Pagination buttons will be dynamically inserted here -->
+            </nav>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        const productsPerPage = 6;
+        let currentPage = 1;
+        let filteredProducts = [];
+
+        function showProductDetails(productId) {
+            window.location.href = /*[[@{/Page(action='product-detail', id='')}]]*/ '' + productId;
+        }
+
+        function filterProducts() {
+            const searchInput = document.getElementById('searchInput');
+            const filter = searchInput.value.toLowerCase();
+            const allProducts = /*[[${products}]]*/ [];
+
+            filteredProducts = allProducts.filter(product => 
+                product.name.toLowerCase().includes(filter) || 
+                product.description.toLowerCase().includes(filter)
+            );
+
+            currentPage = 1;
+            displayProducts();
+            updatePagination();
+        }
+
+        function displayProducts() {
+            const productGrid = document.getElementById('productGrid');
+            productGrid.innerHTML = '';
+
+            const startIndex = (currentPage - 1) * productsPerPage;
+            const endIndex = startIndex + productsPerPage;
+            const productsToShow = filteredProducts.slice(startIndex, endIndex);
+
+            if (productsToShow.length === 0) {
+                productGrid.innerHTML = '<div class="col-span-full text-center py-8"><p class="text-xl text-gray-600">No products available at the moment.</p></div>';
+                return;
+            }
+
+            productsToShow.forEach(product => {
+                const productElement = document.createElement('div');
+                productElement.className = 'bg-white rounded-lg shadow-md overflow-hidden product-item';
+                productElement.innerHTML = `
+                    <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="${product.name}" class="w-full h-48 object-cover cursor-pointer" onclick="showProductDetails('${product.id}')">
+                    <div class="p-4">
+                        <h2 class="text-xl font-bold mb-2">${product.name}</h2>
+                        <p class="text-gray-600 mb-4">${product.description.length > 100 ? product.description.substring(0, 97) + '...' : product.description}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-lg font-bold text-primary">$${product.price.toFixed(2)}</span>
+                            <a href="?action=product-detail&id=${product.id}" class="bg-primary text-white px-4 py-2 rounded hover:bg-red-600">View Details</a>
+                        </div>
+                    </div>
+                `;
+                productGrid.appendChild(productElement);
+            });
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+            const paginationElement = document.getElementById('pagination');
+            paginationElement.innerHTML = '';
+
+            if (currentPage > 1) {
+                paginationElement.appendChild(createPaginationButton('Previous', currentPage - 1));
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                paginationElement.appendChild(createPaginationButton(i.toString(), i, i === currentPage));
+            }
+
+            if (currentPage < totalPages) {
+                paginationElement.appendChild(createPaginationButton('Next', currentPage + 1));
+            }
+        }
+
+        function createPaginationButton(text, page, isActive = false) {
+            const button = document.createElement('a');
+            button.href = '#';
+            button.className = `relative inline-flex items-center px-4 py-2 border ${isActive ? 'bg-primary text-white' : 'bg-white text-gray-700'} text-sm font-medium ${!isActive ? 'hover:bg-gray-50' : ''}`;
+            button.textContent = text;
+            button.onclick = (e) => {
+                e.preventDefault();
+                currentPage = page;
+                displayProducts();
+                updatePagination();
+            };
+            return button;
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterProducts);
+
+        // Initial setup
+        filterProducts();
+    </script>
+</body>
+
+</html>

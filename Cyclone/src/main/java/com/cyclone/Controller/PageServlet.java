@@ -86,9 +86,15 @@ public class PageServlet extends HttpServlet {
 			case "about":
 				about(request, response);
 				break;
+			case "product":
+				product(request, response);
+				break;
 			case "contact":
 				contact(request, response);
 				break;
+            case "product-detail":
+                productDetail(request, response);
+                break;
 			default:
 				home(request, response);
 				break;
@@ -113,14 +119,7 @@ public class PageServlet extends HttpServlet {
 
 		String action = request.getParameter("action");
 	
-		switch (action) {
-			case "SubmitContact":
-				submitContact(request, response);
-				break;
-			default:
-				response.sendRedirect(request.getContextPath() + "/page?action=Home");
-				break;
-		}
+		
 	}
 
     private void home(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -138,9 +137,30 @@ public class PageServlet extends HttpServlet {
         templateEngine.process("contact", context, response.getWriter());
     }
 
-    private void submitContact(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void product(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Product> products = productService.getAllProducts();
         WebContext context = new WebContext(request, response, getServletContext());
-        templateEngine.process("submitContact", context, response.getWriter());
+        context.setVariable("products", products);
+        for (Product product : products) {
+           logger.info(product.getName());
+           logger.info(product.getDescription());
+           logger.info(Double.toString(product.getPrice()));
+           logger.info(Integer.toString(product.getStock()));
+
+        }
+        templateEngine.process("product", context, response.getWriter());
     }
+
+    private void productDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        WebContext context = new WebContext(request, response, getServletContext());
+        Optional<Product> product = productService.getProductById(Integer.parseInt(request.getParameter("id")));
+        if (product.isPresent()) {
+            context.setVariable("product", product.get());
+            templateEngine.process("detail-produit", context, response.getWriter());
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
 
 }
