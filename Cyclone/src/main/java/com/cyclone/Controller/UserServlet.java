@@ -66,6 +66,9 @@ public class UserServlet extends HttpServlet {
 			case "list":
 				listUsers(request, response);
 				break;
+			case "paginate":
+				pagination(request, response);
+				break;
 			case "search":
 				searchUser(request, response);
 				break;
@@ -150,31 +153,95 @@ public class UserServlet extends HttpServlet {
 	}
 
 	protected void listUsers(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		WebContext context = new WebContext(request, response, getServletContext());
-		String page = "admin/userManagement";
+	        throws ServletException, IOException {
+	    WebContext context = new WebContext(request, response, getServletContext());
+	    String page = "admin/userManagement";
 
-		Optional<List<User>> usersOpt = userService.getAllUsers();
+	    String pageNumberParam = request.getParameter("pageNumber");
+	    String pageSizeParam = request.getParameter("pageSize");
 
-		if (usersOpt.isPresent()) {
-			List<User> admins = usersOpt.get().stream().filter(user -> user.getRole() == Role.ADMIN)
-					.collect(Collectors.toList());
+	    // Parse parameters with default values
+	    int pageNumber = (pageNumberParam != null && !pageNumberParam.isEmpty())
+	            ? Integer.parseInt(pageNumberParam)
+	            : 0; // Default value for page number
 
-			List<User> clients = usersOpt.get().stream().filter(user -> user.getRole() == Role.CLIENT)
-					.collect(Collectors.toList());
+	    int pageSize = (pageSizeParam != null && !pageSizeParam.isEmpty())
+	            ? Integer.parseInt(pageSizeParam)
+	            : 5; // Default value for page size
 
-			context.setVariable("admins", admins);
-			context.setVariable("clients", clients);
+	    Optional<List<User>> usersOpt = userService.getAllUsers();
 
-			templateEngine.process(page, context, response.getWriter());
-		} else {
-			context.setVariable("admins", null);
-			context.setVariable("clients", null);
-			context.setVariable("emptyTable", "no users found");
-			templateEngine.process(page, context, response.getWriter());
-		}
+	    if (usersOpt.isPresent()) {
+	        List<User> admins = usersOpt.get().stream()
+	                .filter(user -> user.getRole() == Role.ADMIN)
+	                .collect(Collectors.toList());
 
+	        List<User> clients = usersOpt.get().stream()
+	                .filter(user -> user.getRole() == Role.CLIENT)
+	                .collect(Collectors.toList());
+
+	        // Set variables for Thymeleaf
+	        context.setVariable("admins", admins);
+	        context.setVariable("clients", clients);
+	        context.setVariable("totalAdmins", admins.size());
+	        context.setVariable("totalClients", clients.size());
+	        context.setVariable("pageNumber", pageNumber);
+	        context.setVariable("pageSize", pageSize);
+
+	        templateEngine.process(page, context, response.getWriter());
+	    } else {
+	        context.setVariable("admins", null);
+	        context.setVariable("clients", null);
+	        context.setVariable("emptyTable", "no users found");
+	        templateEngine.process(page, context, response.getWriter());
+	    }
 	}
+	
+	protected void pagination(HttpServletRequest request, HttpServletResponse response)
+	        throws ServletException, IOException {
+	    WebContext context = new WebContext(request, response, getServletContext());
+	    String page = "admin/userManagement";
+
+	    String pageNumberParam = request.getParameter("pageNumber");
+	    String pageSizeParam = request.getParameter("pageSize");
+
+	    // Parse parameters with default values
+	    int pageNumber = (pageNumberParam != null && !pageNumberParam.isEmpty())
+	            ? Integer.parseInt(pageNumberParam)
+	            : 0; // Default value for page number
+
+	    int pageSize = (pageSizeParam != null && !pageSizeParam.isEmpty())
+	            ? Integer.parseInt(pageSizeParam)
+	            : 5; // Default value for page size
+
+	    Optional<List<User>> usersOpt = userService.getAllUsersPaginated(pageNumber, pageSize);
+
+	    if (usersOpt.isPresent()) {
+	        List<User> admins = usersOpt.get().stream()
+	                .filter(user -> user.getRole() == Role.ADMIN)
+	                .collect(Collectors.toList());
+
+	        List<User> clients = usersOpt.get().stream()
+	                .filter(user -> user.getRole() == Role.CLIENT)
+	                .collect(Collectors.toList());
+
+	        // Set variables for Thymeleaf
+	        context.setVariable("admins", admins);
+	        context.setVariable("clients", clients);
+	        context.setVariable("totalAdmins", admins.size());
+	        context.setVariable("totalClients", clients.size());
+	        context.setVariable("pageNumber", pageNumber); 
+	        context.setVariable("pageSize", pageSize);
+
+	        templateEngine.process(page, context, response.getWriter());
+	    } else {
+	        context.setVariable("admins", null);
+	        context.setVariable("clients", null);
+	        context.setVariable("emptyTable", "no users found");
+	        templateEngine.process(page, context, response.getWriter());
+	    }
+	}
+
 
 	protected void showEditForm(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

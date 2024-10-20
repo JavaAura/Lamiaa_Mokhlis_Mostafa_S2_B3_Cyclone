@@ -41,6 +41,23 @@ public class UserService {
 	public Optional<List<User>> getAllUsers() {
 		return Optional.ofNullable(userRepository.getAllUsers());
 	}
+	
+	public Optional<List<User>> getAllUsersPaginated(int pageNumber, int pageSize) {
+	    List<User> allUsers = userRepository.getAllUsers();
+
+	    if (allUsers == null || allUsers.isEmpty()) {
+	        return Optional.empty();
+	    }
+
+	    int start = pageNumber * pageSize;
+	    int end = Math.min(start + pageSize, allUsers.size());
+
+	    if (start >= allUsers.size() || start < 0) {
+	        return Optional.empty();
+	    }
+
+	    return Optional.of(allUsers.subList(start, end));
+	}
 
 	public boolean updateUser(User user) {
 		return userRepository.updateUser(user);
