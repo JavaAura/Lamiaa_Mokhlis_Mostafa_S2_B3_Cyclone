@@ -82,7 +82,12 @@ We welcome contributions to Cyclone! Please follow these steps:
 
 
 ## Screenshots
-[Add screenshots of key pages/features here]
+![Home page](https://raw.githubusercontent.com/JavaAura/Lamiaa_Mokhlis_Mostafa_S2_B3_Cyclone/refs/heads/main/Cyclone/image/home.png)
+
+![Product page](https://raw.githubusercontent.com/JavaAura/Lamiaa_Mokhlis_Mostafa_S2_B3_Cyclone/refs/heads/main/Cyclone/image/products.png)
+
+![Contact page](https://raw.githubusercontent.com/JavaAura/Lamiaa_Mokhlis_Mostafa_S2_B3_Cyclone/refs/heads/main/Cyclone/image/contact.png)
+
 
 ## Future Improvements
 - Implement a review and rating system for products
