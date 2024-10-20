@@ -47,4 +47,9 @@ public class UserRepositoryImpl implements UserRepository {
     public boolean deleteUser(int id) {
         return userDAO.deleteUser(id);
     }
+    
+    @Override
+    public Optional<List<User>> searchUsersByName(String name){
+    	return Optional.of(userDAO.searchUsersByName(name));
+    }
 }

@@ -49,4 +49,9 @@ public class UserService {
 	public boolean deleteUser(int id) {
 		return userRepository.deleteUser(id);
 	}
+	
+	public Optional<List<User>> searchUsersByName(String name) {
+	    return userRepository.searchUsersByName(name);
+	}
+
 }

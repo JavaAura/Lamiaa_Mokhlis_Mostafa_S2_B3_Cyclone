@@ -138,4 +138,29 @@ public class UserDAOImpl implements UserDAO {
 			return false;
 		}
 	}
+	
+	@Override
+	public List<User> searchUsersByName(String name) {
+	    try {
+	        TypedQuery<Admin> adminQuery = entityManager.createQuery(
+	            "SELECT a FROM Admin a WHERE a.firstName LIKE :keyword OR a.lastName LIKE :keyword", Admin.class);
+	        adminQuery.setParameter("keyword", "%" + name + "%");
+	        List<Admin> adminResults = adminQuery.getResultList();
+
+	        TypedQuery<Client> clientQuery = entityManager.createQuery(
+	            "SELECT c FROM Client c WHERE c.firstName LIKE :keyword OR c.lastName LIKE :keyword", Client.class);
+	        clientQuery.setParameter("keyword", "%" + name + "%");
+	        List<Client> clientResults = clientQuery.getResultList();
+
+	        List<User> allUsers = new ArrayList<>();
+	        allUsers.addAll(adminResults);
+	        allUsers.addAll(clientResults);
+
+	        return allUsers;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return null;
+	    }
+	}
+
 }
