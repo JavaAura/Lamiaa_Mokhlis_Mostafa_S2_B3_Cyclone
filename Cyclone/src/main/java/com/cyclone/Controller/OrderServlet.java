@@ -371,17 +371,19 @@ public class OrderServlet extends HttpServlet {
 	}
 	
 	private void handleUpdateOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
-	/*	 try {
+	 try {
 		        int orderId = Integer.parseInt(request.getParameter("orderId"));
 		        Optional<Order> optionalOrder = orderService.findOrderById(orderId);
 
 		        if (optionalOrder.isPresent()) {
 		            Order existingOrder = optionalOrder.get();
+		            System.out.println(existingOrder.getStatus());
 		            String quantityStr = request.getParameter("quantity");
 
 		            if (quantityStr != null) {
 		                int quantity = Integer.parseInt(quantityStr);
-		                if ("PENDING".equals(existingOrder.getStatus()) || "PROCESSING".equals(existingOrder.getStatus())) {
+		               String existingOrderStatus=existingOrder.getStatus().name();
+		               if ("PENDING".equals(existingOrderStatus) || "PROCESSING".equals(existingOrderStatus)) {
 		                	  List<Product> products = existingOrder.getProducts();
 		                      if (products != null && !products.isEmpty()) {
 		                          Product product = products.get(0);
@@ -389,11 +391,16 @@ public class OrderServlet extends HttpServlet {
 		                            existingOrder.setQuantity(quantity);
 		                            orderService.modifyOrder(existingOrder);
 		                            
-		                            product.decrementStock(quantity);
+		                           /* product.decrementStock(quantity);
 		                            
-		                            productService.updateProduct(product);
+		                            productService.updateProduct(product);*/
 
-		                            response.sendRedirect("orders"); 
+		                            List<Order> orders = orderService.getAllOrders(); 
+
+		                            WebContext context = new WebContext(request, response, getServletContext());
+		                            context.setVariable("orders", orders);
+
+		                            templateEngine.process("order/ordersList", context, response.getWriter());
 		                        } else {
 		                            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Not enough stock available");
 		                        }
@@ -414,7 +421,7 @@ public class OrderServlet extends HttpServlet {
 		    } catch (Exception e) {
 		        e.printStackTrace();
 		        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while updating the order");
-		    }*/
+		    }
 	}
 	
     private void showOrderButtons(HttpServletRequest request, HttpServletResponse response) throws IOException {
