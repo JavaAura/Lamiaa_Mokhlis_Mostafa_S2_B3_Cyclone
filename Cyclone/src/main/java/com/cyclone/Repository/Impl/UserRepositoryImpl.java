@@ -50,6 +50,6 @@ public class UserRepositoryImpl implements UserRepository {
     
     @Override
     public Optional<List<User>> searchUsersByName(String name){
-    	return Optional.of(userDAO.searchUsersByName(name));
+    	return Optional.ofNullable(userDAO.searchUsersByName(name));
     }
 }

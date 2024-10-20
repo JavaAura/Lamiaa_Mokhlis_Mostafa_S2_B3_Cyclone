@@ -7,8 +7,8 @@
   
   <!-- Servlet declarations -->
   <servlet>
-    <servlet-name>AuthServlet</servlet-name>
-    <servlet-class>com.cyclone.Controller.AuthServlet</servlet-class>
+    <servlet-name>AuthenticationServlet</servlet-name>
+    <servlet-class>com.cyclone.Controller.AuthenticationServlet</servlet-class>
   </servlet>
   
   <servlet>
@@ -21,6 +21,11 @@
     <servlet-class>com.cyclone.Controller.ProductServlet</servlet-class>
   </servlet>
   <!-- Servlet mappings -->
+  <servlet-mapping>
+    <servlet-name>AuthenticationServlet</servlet-name>
+    <url-pattern>/auth</url-pattern>
+  </servlet-mapping>
+  
   <servlet-mapping>
     <servlet-name>ProductServlet</servlet-name>
     <url-pattern>/Product</url-pattern>

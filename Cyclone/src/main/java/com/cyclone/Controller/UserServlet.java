@@ -293,15 +293,14 @@ public class UserServlet extends HttpServlet {
 	    if (!usersOpt.isPresent()) {
 	        context.setVariable("emptyTable", "No users found.");
 	    } else {
-	        List<User> admins = usersOpt.get().stream()
-	                .filter(user -> user.getRole() == Role.ADMIN)
-	                .collect(Collectors.toList());
-	        List<User> clients = usersOpt.get().stream()
-	                .filter(user -> user.getRole() == Role.CLIENT)
-	                .collect(Collectors.toList());
+	    	List<User> admins = usersOpt.get().stream().filter(user -> user.getRole() == Role.ADMIN)
+					.collect(Collectors.toList());
 
-	        context.setVariable("admins", admins);
-	        context.setVariable("clients", clients);
+			List<User> clients = usersOpt.get().stream().filter(user -> user.getRole() == Role.CLIENT)
+					.collect(Collectors.toList());
+
+			context.setVariable("admins", admins);
+			context.setVariable("clients", clients);
 	    }
 
 	    templateEngine.process(page, context, response.getWriter());
