@@ -282,7 +282,7 @@ public class OrderServlet extends HttpServlet {
     
 
 	private void handleCreateOrder(HttpServletRequest request, HttpServletResponse response) {
-	/* try {
+	try {
 		        int clientId = Integer.parseInt(request.getParameter("clientId"));
 		        User client = userService.findUserById(clientId);
 
@@ -310,9 +310,9 @@ public class OrderServlet extends HttpServlet {
 		                    newOrder.setQuantity(quantity); 
 		                    orderService.addOrder(newOrder);
 		                    
-		                    product.decrementStock(quantity);
-		                    
-		                    productService.updateProduct(product);
+//		                    product.decrementStock(quantity);
+//		                    
+//		                    productService.updateProduct(product);
 		                    
 		                    response.sendRedirect("orders");
 		                } else {
@@ -329,7 +329,7 @@ public class OrderServlet extends HttpServlet {
 		    } catch (Exception e) {
 		        e.printStackTrace();
 		        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while creating the order");
-		    }*/
+		    }
 	}
 	
 	private void handleDeleteOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
