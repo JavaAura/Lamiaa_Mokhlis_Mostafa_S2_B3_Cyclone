@@ -18,9 +18,9 @@
         <properties>
     		<!-- PostgreSQL Configuration -->
     		<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-    		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/cyclone"/>
-    		<property name="javax.persistence.jdbc.user" value="postgres"/>
-    		<property name="javax.persistence.jdbc.password" value="lamiaa"/>
+    		<property name="javax.persistence.jdbc.url" value="${db.url}"/>
+    		<property name="javax.persistence.jdbc.user" value="${db.user}"/>
+    		<property name="javax.persistence.jdbc.password" value="${db.password}"/>
 
     		<!-- Hibernate properties -->
     		<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
