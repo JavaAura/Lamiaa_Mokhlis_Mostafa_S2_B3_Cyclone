@@ -25,7 +25,8 @@ import com.cyclone.Model.User;
 import com.cyclone.Model.Enum.OrderStatus;
 import com.cyclone.Service.OrderService;
 import com.cyclone.Service.UserService;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * Servlet implementation class OrderServlet
  */
@@ -34,6 +35,8 @@ public class OrderServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     private TemplateEngine templateEngine;
 	private OrderService orderService;
+	private static final Logger logger = LoggerFactory.getLogger(OrderServlet.class);
+
 	//private ProductService productService;
 	private UserService userService;
     /**
@@ -131,41 +134,71 @@ public class OrderServlet extends HttpServlet {
 	}
 	
     private void displayOrdersAdmin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	 int page = 1;
-    	    String pageParam = request.getParameter("page");
-    	    if (pageParam != null && !pageParam.isEmpty()) {
-    	        try {
-    	            page = Integer.parseInt(pageParam);
-    	        } catch (NumberFormatException e) {
-    	            page = 1; 
+
+    	    try {
+    	        
+    	        int page = 1;
+    	        String pageParam = request.getParameter("page");
+    	        if (pageParam != null && !pageParam.isEmpty()) {
+    	            try {
+    	                page = Integer.parseInt(pageParam);
+    	            } catch (NumberFormatException e) {
+    	                logger.warn("Invalid page parameter: {}", pageParam);
+    	                page = 1; 
+    	            }
     	        }
-    	    }
-    	    int pageSize = 10; 
-    	    int offset = (page - 1) * pageSize;
-    	List<Order> orders = orderService.getOrdersWithPagination(offset, pageSize);
-    	int totalOrders = orderService.getTotalOrderCount();				
-        int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
-        List<Map<String, Object>> orderDetailsList = new ArrayList<>(); 
+    	        int pageSize = 10; 
+    	        int offset = (page - 1) * pageSize;
 
-      for (Order order : orders) {
-            if (!order.getProducts().isEmpty()) {
-                Product product = order.getProducts().get(0); 
+    	        List<Order> orders = orderService.getOrdersWithPagination( offset, pageSize);
+    	        int totalOrders = orderService.getTotalOrderCount(); 
+    	        int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+    	        
+    	        List<Map<String, Object>> orderDetailsList = new ArrayList<>(); 
 
-                double totalPrice = product.getPrice() * order.getQuantity(); 
+    	        for (Order order : orders) {
+    	            if (!order.getProducts().isEmpty()) {
+    	                Product product = order.getProducts().get(0); 
 
-                Map<String, Object> orderDetail = new HashMap<>();
-                orderDetail.put("order", order); 
-                orderDetail.put("productName", product.getName()); 
-                orderDetail.put("totalPrice", totalPrice); 
-                
-                orderDetailsList.add(orderDetail); 
-            }
-        }
+    	                double totalPrice = product.getPrice() * order.getQuantity(); 
 
-        request.setAttribute("orderDetails", orderDetailsList); 
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.getRequestDispatcher("/WEB-INF/templates/order/AdminOrdersList.html").forward(request, response);
+    	                Map<String, Object> orderDetail = new HashMap<>();
+    	                orderDetail.put("order", order); 
+    	                orderDetail.put("product", product); 
+    	                orderDetail.put("totalPrice", totalPrice); 
+    	                
+    	                orderDetailsList.add(orderDetail); 
+    	            }
+    	        }
+
+    	        request.setAttribute("orderDetails", orderDetailsList); 
+    	        request.setAttribute("currentPage", page);
+    	        request.setAttribute("totalPages", totalPages);
+    	        request.setAttribute("orderStatuses", OrderStatus.values());
+    	        if (orders.isEmpty()) {
+    	            request.setAttribute("noOrdersMessage", "No orders available at the moment.");
+    	        }
+    	        
+//    	        for (Order order : orders) {
+//    	            logger.info("Order details - ID: {}, Status: {}, Date: {}, Client: {} {}, Quantity: {}",
+//    	                order.getId(),
+//    	                order.getStatus(),
+//    	                order.getOrderDate(),
+//    	                order.getClient().getFirstName(),
+//    	                order.getClient().getLastName(),
+//    	                order.getQuantity());
+//    	        }
+
+    	        WebContext context = new WebContext(request, response, getServletContext());
+    	        context.setVariable("orderDetails", orderDetailsList);
+    	        context.setVariable("currentPage", page);
+    	        context.setVariable("totalPages", totalPages);
+    	        templateEngine.process("order/AdminOrdersList", context, response.getWriter());
+    	        
+    	    } catch (NumberFormatException e) {
+    	    	 logger.error("Error parsing page parameter: {}", e.getMessage());
+    	         response.getWriter().write("Invalid page number. Please provide a valid number."); 
+    	    }  
     }
     
 
@@ -313,17 +346,34 @@ public class OrderServlet extends HttpServlet {
 
     
 	private void displayClientOrders(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
-		  String clientIdParam = request.getParameter("clientId");
+		 String clientIdParam = request.getParameter("clientId");
 
-		    try {
-		        int clientId = Integer.parseInt(clientIdParam);
-		        Optional<List<Order>> optionalOrders = orderService.getOrdersByClient(clientId);
-		        List<Order> orders = optionalOrders.orElseGet(ArrayList::new);
-		        request.setAttribute("orders", orders);
-		        request.getRequestDispatcher("/WEB-INF/templates/order/ordersList.html").forward(request, response);
-		    } catch (NumberFormatException e) {
-		        System.out.println("Invalid clientId: " + clientIdParam);
-		        response.getWriter().write("Invalid client ID.");
-		    }
+	        try {
+	            int clientId = Integer.parseInt(clientIdParam);
+	            Optional<List<Order>> optionalOrders = orderService.getOrdersByClient(clientId);
+	            List<Order> orders = optionalOrders.orElseGet(ArrayList::new);
+	            
+	            // Log order details (unchanged)
+	            for (Order order : orders) {
+	                logger.info("Order details - ID: {}, Status: {}, Date: {},Client: {} {}, Quantity: {}",
+	                    order.getId(),
+	                    order.getStatus(),
+	                    order.getOrderDate(),
+	                    order.getClient().getFirstName(),
+	                    order.getClient().getLastName(),
+	                    order.getQuantity());
+	            }
+	            logger.info("ok");
+
+	            // Create a WebContext and add the orders to it
+	            WebContext context = new WebContext(request, response, getServletContext());
+	            context.setVariable("orders", orders);
+
+	            // Process the template and write the result to the response
+	            templateEngine.process("order/ordersList", context, response.getWriter());
+	        } catch (NumberFormatException e) {
+	            logger.warn("Invalid clientId: {}", clientIdParam);
+	            response.getWriter().write("Invalid client ID.");
+	        }
 	}
 }

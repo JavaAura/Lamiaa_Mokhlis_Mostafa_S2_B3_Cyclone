@@ -7,6 +7,7 @@ import java.util.Collections;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 
+import com.cyclone.Model.Client;
 import com.cyclone.Model.Order;
 import com.cyclone.Model.Product;
 import com.cyclone.Model.User;
@@ -19,13 +20,13 @@ public class OrderTest {
 	 private OrderRepositoryImpl orderRepository;
 	    private OrderService orderService; 
 	    private Order order; 
-	    private User client; 
+	    private Client client; 
 	    private Product product; 
 	    @BeforeEach
 	    public void setUp() {
 	        orderRepository = mock(OrderRepositoryImpl.class);
 	        orderService = new OrderService(); 
-	        client = mock(User.class); 
+	        client = mock(Client.class); 
 	        product = mock(Product.class); 
 	        order = new Order();
 	        order.setId(1);

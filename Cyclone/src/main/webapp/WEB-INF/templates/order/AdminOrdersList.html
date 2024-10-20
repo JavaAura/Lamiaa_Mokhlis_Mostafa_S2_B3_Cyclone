@@ -2,119 +2,124 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Orders Management</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#FF0000',
-                        secondary: '#002244',
-                    }
-                }
-            }
-        }
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Orders Management</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+	tailwind.config = {
+		theme : {
+			extend : {
+				colors : {
+					primary : '#FF0000',
+					secondary : '#002244',
+				}
+			}
+		}
+	}
+</script>
 </head>
 
 <body class="bg-gray-100">
-    <!-- Top navbar -->
-    <nav class="bg-secondary text-white">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="text-2xl font-bold">
-                <span class="text-primary">C</span>YCLONE
-            </div>
-            <div>
-                878-9674-4455
-            </div>
-        </div>
-    </nav>
+	<!-- Top navbar -->
+	<nav class="bg-secondary text-white">
+		<div
+			class="container mx-auto px-4 py-3 flex justify-between items-center">
+			<div class="text-2xl font-bold">
+				<span class="text-primary">C</span>YCLONE
+			</div>
+			<div>878-9674-4455</div>
+		</div>
+	</nav>
 
-    <!-- Menu navbar -->
-    <div class="bg-primary">
-        <div class="container mx-auto px-4">
-            <ul class="flex justify-center space-x-6 py-4">
-                <li><a href="home.html" class="text-white font-bold hover:text-secondary">Home</a></li>
-                <li><a href="products.html" class="text-white font-bold hover:text-secondary">Products</a></li>
-                <li><a href="contact.html" class="text-white font-bold hover:text-secondary">Contact</a></li>
-            </ul>
-        </div>
-    </div>
+	<!-- Menu navbar -->
+	<div class="bg-primary">
+		<div class="container mx-auto px-4">
+			<ul class="flex justify-center space-x-6 py-4">
+				<li><a href="home.html"
+					class="text-white font-bold hover:text-secondary">Home</a></li>
+				<li><a href="products.html"
+					class="text-white font-bold hover:text-secondary">Products</a></li>
+				<li><a href="contact.html"
+					class="text-white font-bold hover:text-secondary">Contact</a></li>
+			</ul>
+		</div>
+	</div>
 
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold mb-6 text-secondary">Admin Orders Management</h1>
+	<div class="container mx-auto px-4 py-8">
+		<h1 class="text-3xl font-bold mb-6 text-secondary">Admin Orders
+			Management</h1>
 
-        <!-- Search form -->
-        <form th:action="@{/search}" method="get" class="mb-4">
-            <input type="text" name="search" placeholder="Search by client last name" class="border p-2 mr-2" />
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Search</button>
-        </form>
+		<!-- Search form -->
+		<form th:action="@{/search}" method="get" class="mb-4">
+			<input type="text" name="search"
+				placeholder="Search by client last name" class="border p-2 mr-2" />
+			<button type="submit"
+				class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Search</button>
+		</form>
 
-        <div th:if="${orders.isEmpty()}">
-            <p class="text-gray-600">No orders available.</p>
-        </div>
+		<div th:if="${orderDetails.isEmpty()}">
+			<p class="text-gray-600">No orders available.</p>
+		</div>
 
-        <form th:action="@{/updateOrderAdmin}" method="post">
-            <table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
-                <thead class="bg-secondary text-white">
-                    <tr>
-                        <th class="py-3 px-4 text-left">Order Date</th>
-                        <th class="py-3 px-4 text-left">Client Name</th>
-                        <th class="py-3 px-4 text-left">Product Name</th>
-                        <th class="py-3 px-4 text-left">Quantity</th>
-                        <th class="py-3 px-4 text-left">Total Price</th>
-                        <th class="py-3 px-4 text-left">Status</th>
-                        <th class="py-3 px-4 text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="orderDetail : ${orderDetails}">
-                        <td class="py-3 px-4">
-                            <span th:text="${orderDetail['order'].orderDate}"></span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span th:text="${orderDetail['order'].client.firstName} + ' ' + ${orderDetail['order'].client.lastName}"></span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span th:text="${orderDetail['productName']}"></span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <input type="number" name="quantity" class="border p-2" min="1" th:value="${orderDetail['order'].quantity}" readonly>
-                        </td>
-                        <td class="py-3 px-4">
-                            <span th:text="${orderDetail['totalPrice']}"></span>
-                        </td>
-                        <td class="py-3 px-4">
-                            <select name="status" class="border p-2">
-                                <option th:value="${orderDetail['order'].status}" th:text="${orderDetail['order'].status}" selected></option>
-                                <option th:value="'PENDING'" th:text="'PENDING'"></option>
-                                <option th:value="'PROCESSING'" th:text="'PROCESSING'"></option>
-                                <option th:value="'SHIPPED'" th:text="'SHIPPED'"></option>
-                                <option th:value="'DELIVERED'" th:text="'DELIVERED'"></option>
-                                <option th:value="'CANCELLED'" th:text="'CANCELLED'"></option>
-                            </select>
-                        </td>
-                        <td class="py-3 px-4 text-center">
-                            <input type="hidden" name="orderId" th:value="${orderDetail['order'].id}">
-                            <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">Update</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </form>
+		<form th:action="@{/updateOrderAdmin}" method="post">
+			<table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
+				<thead class="bg-secondary text-white">
+					<tr>
+						<th class="py-3 px-4 text-left">Order Date</th>
+						<th class="py-3 px-4 text-left">Client</th>
+						<th class="py-3 px-4 text-left">Quantity</th>
+						<th class="py-3 px-4 text-left">Status</th>
+						<th class="py-3 px-4 text-left">Unit Price</th>
+						<th class="py-3 px-4 text-left">Total Price</th>
+						<th class="py-3 px-4 text-center">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="orderDetail : ${orderDetails}">
+						<td class="py-3 px-4"><span
+							th:text="${orderDetail['order'].orderDate}"></span></td>
+						<td class="py-3 px-4"><span
+							th:text="${orderDetail['order'].client.firstName + ' ' + orderDetail['order'].client.lastName}"></span>
+						</td>
+						<td class="py-3 px-4"><input type="number" name="quantity"
+							class="border p-2" min="1"
+							th:value="${orderDetail['order'].quantity}" readonly></td>
+						<td class="py-3 px-4"><select name="status"
+							class="border p-2">
+								<option th:each="status : ${orderStatuses}" th:value="${status}"
+									th:text="${status}"
+									th:selected="${status == orderDetail['order'].status}">
+								</option>
+						</select></td>
+						<td class="py-3 px-4"><span
+							th:text="${orderDetail['product'].price}"></span></td>
+						<td class="py-3 px-4 text-center"><span
+							th:text="${orderDetail['totalPrice']}"></span></td>
+						<td class="py-3 px-4 text-center"><input type="hidden"
+							name="orderId" th:value="${orderDetail['order'].id}">
+							<button type="submit"
+								class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">Update</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
 
-        <!-- Pagination -->
-        <div class="mt-4">
-            <span th:text="'Page ' + ${currentPage} + ' of ' + ${totalPages}" class="text-gray-700"></span>
-            <div class="flex justify-between">
-                <a th:if="${currentPage > 1}" th:href="@{/admin/orders(page=${currentPage - 1}, search=${search})}" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Previous</a>
-                <a th:if="${currentPage < totalPages}" th:href="@{/admin/orders(page=${currentPage + 1}, search=${search})}" class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Next</a>
-            </div>
-        </div>
-    </div>
+		<!-- Pagination -->
+		<div class="mt-4">
+			<span th:text="'Page ' + ${currentPage} + ' of ' + ${totalPages}"
+				class="text-gray-700"></span>
+			<div class="flex justify-between">
+				<a th:if="${currentPage > 1}"
+					th:href="@{/admin/orders(page=${currentPage - 1}, search=${search})}"
+					class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Previous</a>
+				<a th:if="${currentPage < totalPages}"
+					th:href="@{/admin/orders(page=${currentPage + 1}, search=${search})}"
+					class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400">Next</a>
+			</div>
+		</div>
+	</div>
 </body>
 
 </html>
