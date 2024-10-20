@@ -1,5 +1,10 @@
 package com.cyclone.Util;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -16,18 +21,19 @@ public class JPAUtil {
 
     public static EntityManagerFactory getEntityManagerFactory() {
         if (entityManagerFactory == null) {
-            synchronized (JPAUtil.class) {
-                if (entityManagerFactory == null) { // Double-checked locking
-                    try {
-                        logger.info("Attempting to create EntityManagerFactory...");
-                        entityManagerFactory = Persistence.createEntityManagerFactory("cycloneJPA");
-                        logger.info("EntityManagerFactory created successfully.");
-                    } catch (Exception e) {
-                        logger.error("Error creating EntityManagerFactory: " + e.getMessage());
-                        e.printStackTrace();
-                        throw new ExceptionInInitializerError("EntityManagerFactory initialization failed.");
-                    }
-                }
+            try {
+                Properties props = new Properties();
+                props.load(JPAUtil.class.getClassLoader().getResourceAsStream("config.properties"));
+
+
+                Map<String, String> properties = new HashMap<>();
+                properties.put("javax.persistence.jdbc.url", props.getProperty("db.url"));
+                properties.put("javax.persistence.jdbc.user", props.getProperty("db.user"));
+                properties.put("javax.persistence.jdbc.password", props.getProperty("db.password"));
+
+                entityManagerFactory = Persistence.createEntityManagerFactory("cycloneJPA", properties);
+            } catch (IOException e) {
+                throw new RuntimeException("Error loading database configuration", e);
             }
         }
         return entityManagerFactory;
