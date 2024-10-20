@@ -107,7 +107,7 @@ public class OrderServlet extends HttpServlet {
 	}
 	
 	private void updateOrderStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		/*  int orderId = Integer.parseInt(request.getParameter("orderId"));
+		  int orderId = Integer.parseInt(request.getParameter("orderId"));
 		    String status = request.getParameter("status");
 
 		    Optional<Order> optionalOrder = orderService.findOrderById(orderId);
@@ -118,19 +118,43 @@ public class OrderServlet extends HttpServlet {
 		        order.setStatus(OrderStatus.valueOf(status));
 
 		        orderService.modifyOrder(order);
-		        if (OrderStatus.CANCELLED.equals(order.getStatus())) {
+		        List<Order> orders = orderService.getAllOrders(); 
+		        List<Map<String, Object>> orderDetailsList = new ArrayList<>(); 
+
+		        for (Order o : orders) {
+		            if (!o.getProducts().isEmpty()) {
+		                Product product = o.getProducts().get(0); 
+
+		                double totalPrice = product.getPrice() * o.getQuantity(); 
+
+		                Map<String, Object> orderDetail = new HashMap<>();
+		                orderDetail.put("order", order); 
+		                orderDetail.put("product", product); 
+		                orderDetail.put("totalPrice", totalPrice); 
+		                orderDetailsList.add(orderDetail); 
+		            }
+		        }
+		        request.setAttribute("orderDetails", orderDetailsList); 
+    	        
+    	        request.setAttribute("orderStatuses", OrderStatus.values());
+	
+    	        /*   if (OrderStatus.CANCELLED.equals(order.getStatus())) {
 		            if (!order.getProducts().isEmpty()) {
 		                Product product = order.getProducts().get(0);
 		                product.setStock(product.getStock() + quantity);
 		                
 		                productService.updateProduct(product); 
 		            }
-		        }
+		        }*/
 		        request.setAttribute("message", "Order status updated successfully.");
+		        WebContext context = new WebContext(request, response, getServletContext());
+    	        context.setVariable("orderDetails", orderDetailsList);
+    	        templateEngine.process("order/AdminOrdersList", context, response.getWriter());
 		    } else {
 		        request.setAttribute("errorMessage", "Order not found.");
 		    }
-		    displayOrdersAdmin(request, response);*/
+		   
+		   
 	}
 	
     private void displayOrdersAdmin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
