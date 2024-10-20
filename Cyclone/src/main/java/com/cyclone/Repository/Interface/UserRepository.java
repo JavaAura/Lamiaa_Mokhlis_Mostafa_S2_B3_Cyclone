@@ -17,4 +17,6 @@ public interface UserRepository {
     boolean updateUser(User user); 
     
     boolean deleteUser(int id);    
+    
+    Optional<List<User>> searchUsersByName(String name); 
 }
