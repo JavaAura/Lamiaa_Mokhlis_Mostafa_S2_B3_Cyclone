@@ -20,6 +20,7 @@ public class OrderService {
 
 	public OrderService() {
 		this.orderRepository = new OrderRepositoryImpl();
+		LoadOrderMap();
 	}
 
 	public void addOrder(Order order) {
@@ -64,10 +65,13 @@ public class OrderService {
 	}
 
 	public List<Order> getOrdersByClientLastName(String lastName) {
+	    System.out.println("Available last names in orders:");
+	    for (Order order : orderMap.values()) {
+	        System.out.println(order.getClient().getLastName());
+	    }
 		List<Order> searchedOrders = orderMap.values().stream()
 				.filter(order -> order.getClient().getLastName().equalsIgnoreCase(lastName))
 				.collect(Collectors.toList());
-
 		return searchedOrders;
 	}
 

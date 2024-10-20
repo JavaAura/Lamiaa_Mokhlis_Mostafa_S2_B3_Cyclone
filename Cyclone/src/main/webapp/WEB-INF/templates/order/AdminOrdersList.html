@@ -51,9 +51,10 @@
 			Management</h1>
 
 		<!-- Search form -->
-		<form th:action="@{/search}" method="get" class="mb-4">
-			<input type="text" name="search"
-				placeholder="Search by client last name" class="border p-2 mr-2" />
+		<form th:action="@{/orders}" method="get" class="mb-4">
+			<input type="hidden" name="action" value="search" /> <input
+				type="text" name="search" placeholder="Search by client last name"
+				class="border p-2 mr-2" />
 			<button type="submit"
 				class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Search</button>
 		</form>
@@ -63,7 +64,7 @@
 		</div>
 
 		<form th:action="@{/orders}" method="post">
-		    <input type="hidden" name="action" value="updateOrderAdmin">
+			<input type="hidden" name="action" value="updateOrderAdmin">
 			<table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
 				<thead class="bg-secondary text-white">
 					<tr>
@@ -76,7 +77,7 @@
 						<th class="py-3 px-4 text-center">Actions</th>
 					</tr>
 				</thead>
-				<tbody>	
+				<tbody>
 					<tr th:each="orderDetail : ${orderDetails}">
 						<td class="py-3 px-4"><span
 							th:text="${orderDetail['order'].orderDate}"></span></td>

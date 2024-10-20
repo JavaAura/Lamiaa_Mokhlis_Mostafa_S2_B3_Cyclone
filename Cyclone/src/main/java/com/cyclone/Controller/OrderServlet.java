@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -71,7 +72,7 @@ public class OrderServlet extends HttpServlet {
 	        }else if ("viewOrdersAdmin".equals(action)) {
 	        	displayOrdersAdmin(request, response);
 	        }else if ("search".equals(action)){
-	        	
+	        	searchOrders(request, response);
 	        }
 	        else {
 	            showOrderButtons(request, response);
@@ -97,13 +98,66 @@ public class OrderServlet extends HttpServlet {
 	}
 	
 	private void searchOrders(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	    String searchWord = request.getParameter("search");
+		try {
+	        String searchWord = request.getParameter("search");
 
-	    List<Order> matchingOrders = orderService.getOrdersByClientLastName(searchWord);
+	        List<Order> matchingOrders = orderService.getOrdersByClientLastName(searchWord);
 
-	    request.setAttribute("orders", matchingOrders);
+	        int page = 1;
+	        String pageParam = request.getParameter("page");
+	        if (pageParam != null && !pageParam.isEmpty()) {
+	            try {
+	                page = Integer.parseInt(pageParam);
+	            } catch (NumberFormatException e) {
+	                logger.warn("Invalid page parameter: {}", pageParam);
+	                page = 1;
+	            }
+	        }
+	        int pageSize = 10;
+	        int offset = (page - 1) * pageSize;
 
-	    request.getRequestDispatcher("/WEB-INF/templates/order/AdminOrdersList.html").forward(request, response);
+	        int totalOrders = matchingOrders.size();
+	        int totalPages = (int) Math.ceil((double) totalOrders / pageSize);
+
+	        List<Order> paginatedOrders = matchingOrders.stream()
+	                .skip(offset)
+	                .limit(pageSize)
+	                .collect(Collectors.toList());
+
+	        List<Map<String, Object>> orderDetailsList = new ArrayList<>();
+	        for (Order order : paginatedOrders) {
+	            if (!order.getProducts().isEmpty()) {
+	                Product product = order.getProducts().get(0);
+	                double totalPrice = product.getPrice() * order.getQuantity();
+
+	                Map<String, Object> orderDetail = new HashMap<>();
+	                orderDetail.put("order", order);
+	                orderDetail.put("product", product);
+	                orderDetail.put("totalPrice", totalPrice);
+
+	                orderDetailsList.add(orderDetail);
+	            }
+	        }
+
+	        request.setAttribute("orderDetails", orderDetailsList);
+	        request.setAttribute("currentPage", page);
+	        request.setAttribute("totalPages", totalPages);
+	        request.setAttribute("orderStatuses", OrderStatus.values());
+
+	        if (matchingOrders.isEmpty()) {
+	            request.setAttribute("noOrdersMessage", "No matching orders found.");
+	        }
+
+	        WebContext context = new WebContext(request, response, getServletContext());
+	        context.setVariable("orderDetails", orderDetailsList);
+	        context.setVariable("currentPage", page);
+	        context.setVariable("totalPages", totalPages);
+	        templateEngine.process("order/AdminOrdersList", context, response.getWriter());
+
+	    } catch (NumberFormatException e) {
+	        logger.error("Error parsing page parameter: {}", e.getMessage());
+	        response.getWriter().write("Invalid page number. Please provide a valid number.");
+	    }
 	}
 	
 	private void updateOrderStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
