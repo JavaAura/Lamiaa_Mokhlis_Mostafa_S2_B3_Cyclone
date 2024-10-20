@@ -20,7 +20,7 @@ import com.cyclone.Service.UserService;
 /**
  * Servlet implementation class AuthServlet
  */
-public class AuthServlet extends HttpServlet {
+public class AuthenticationServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 	private final UserService userService;
@@ -28,7 +28,7 @@ public class AuthServlet extends HttpServlet {
 	/**
 	 * Default constructor.
 	 */
-	public AuthServlet() {
+	public AuthenticationServlet() {
 		this.userService = new UserService();
 	}
 

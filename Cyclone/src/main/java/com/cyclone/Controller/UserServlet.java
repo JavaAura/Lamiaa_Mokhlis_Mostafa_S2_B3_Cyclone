@@ -66,6 +66,9 @@ public class UserServlet extends HttpServlet {
 			case "list":
 				listUsers(request, response);
 				break;
+			case "search":
+				searchUser(request, response);
+				break;
 			case "delete":
 				deleteUser(request, response);
 				break;
@@ -271,6 +274,36 @@ public class UserServlet extends HttpServlet {
 	    } else {
 	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing user ID");
 	    }
+	}
+
+	protected void searchUser(HttpServletRequest request, HttpServletResponse response)
+	        throws ServletException, IOException {
+	    String keyword = request.getParameter("searchInput");
+
+	    if (keyword == null || keyword.trim().isEmpty()) {
+	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Search name is missing or empty.");
+	        return;
+	    }
+
+	    Optional<List<User>> usersOpt = userService.searchUsersByName(keyword);
+
+	    WebContext context = new WebContext(request, response, getServletContext());
+	    String page = "admin/userManagement";
+
+	    if (!usersOpt.isPresent()) {
+	        context.setVariable("emptyTable", "No users found.");
+	    } else {
+	    	List<User> admins = usersOpt.get().stream().filter(user -> user.getRole() == Role.ADMIN)
+					.collect(Collectors.toList());
+
+			List<User> clients = usersOpt.get().stream().filter(user -> user.getRole() == Role.CLIENT)
+					.collect(Collectors.toList());
+
+			context.setVariable("admins", admins);
+			context.setVariable("clients", clients);
+	    }
+
+	    templateEngine.process(page, context, response.getWriter());
 	}
 
 
