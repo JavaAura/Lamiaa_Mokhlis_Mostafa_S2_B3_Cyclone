@@ -162,6 +162,7 @@ public class OrderServlet extends HttpServlet {
 	
 	private void updateOrderStatus(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		  int orderId = Integer.parseInt(request.getParameter("orderId"));
+		  System.out.println(orderId);
 		    String status = request.getParameter("status");
 
 		    Optional<Order> optionalOrder = orderService.findOrderById(orderId);
@@ -182,7 +183,7 @@ public class OrderServlet extends HttpServlet {
 		                double totalPrice = product.getPrice() * o.getQuantity(); 
 
 		                Map<String, Object> orderDetail = new HashMap<>();
-		                orderDetail.put("order", order); 
+		                orderDetail.put("order", o); 
 		                orderDetail.put("product", product); 
 		                orderDetail.put("totalPrice", totalPrice); 
 		                orderDetailsList.add(orderDetail); 
