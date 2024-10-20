@@ -67,8 +67,6 @@ public class OrderServlet extends HttpServlet {
 		 
 	        if ("viewClientOrders".equals(action)) {
 	        	   displayClientOrders(request, response);
-	        }else if ("deleteOrder".equals(action)){
-	            handleDeleteOrder(request, response);
 	        }else if ("viewOrdersAdmin".equals(action)) {
 	        	displayOrdersAdmin(request, response);
 	        }else if ("search".equals(action)){
@@ -94,7 +92,9 @@ public class OrderServlet extends HttpServlet {
 			   handleUpdateOrder(request, response);
 		}else if ("updateOrderAdmin".equals(action)) {
 	        updateOrderStatus(request, response);
-	    }
+	    }else if ("deleteOrder".equals(action)){
+            handleDeleteOrder(request, response);
+        }
 	}
 	
 	private void searchOrders(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -333,23 +333,24 @@ public class OrderServlet extends HttpServlet {
 	}
 	
 	private void handleDeleteOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		/*  try {
+		 try {
 		        int orderId = Integer.parseInt(request.getParameter("id"));
+		        System.out.println(orderId);
 		        Optional<Order> optionalOrder = orderService.findOrderById(orderId);
 
 		        if (optionalOrder.isPresent()) {
 		            Order orderToDelete = optionalOrder.get();
 		            
-		            if ("PENDING".equals(orderToDelete.getStatus()) || "PROCESSING".equals(orderToDelete.getStatus())) {
+		            if ("PENDING".equals(orderToDelete.getStatus().name()) || "PROCESSING".equals(orderToDelete.getStatus().name())) {
 		                List<Product> products = orderToDelete.getProducts();
 		                
 		                if (products != null && !products.isEmpty()) {
 		                    Product product = products.get(0);
 		                    int quantityToRestore = orderToDelete.getQuantity();
 		                    
-		                    product.incrementStock(quantityToRestore);
+		              /*      product.incrementStock(quantityToRestore);
 		                    
-		                    productService.updateProduct(product);
+		                    productService.updateProduct(product);*/
 		                    
 		                    orderService.removeOrder(orderId);
 		                    
@@ -368,7 +369,7 @@ public class OrderServlet extends HttpServlet {
 		    } catch (Exception e) {
 		        e.printStackTrace();
 		        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An error occurred while deleting the order");
-		    }*/
+		    }
 	}
 	
 	private void handleUpdateOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {

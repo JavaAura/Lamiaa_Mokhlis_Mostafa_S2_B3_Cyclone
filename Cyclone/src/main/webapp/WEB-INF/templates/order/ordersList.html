@@ -69,8 +69,7 @@
 			<tbody>
 				<tr th:each="order : ${orders}">
 					<form th:action="@{/orders}" method="post">
-						<input type="hidden" name="action" value="updateOrder" /> <input
-							type="hidden" name="orderId" th:value="${order.id}" />
+						<input type="hidden" name="orderId" th:value="${order.id}" />
 						<td class="py-3 px-4"><span th:text="${order.orderDate}"></span></td>
 						<td class="py-3 px-4"><span
 							th:text="${order.client.firstName + ' ' + order.client.lastName}"></span></td>
@@ -83,10 +82,11 @@
 						<td class="py-3 px-4 text-center"><span
 							th:text="${order.quantity * order.products[0].price}"></span></td>
 						<td class="py-3 px-4 text-center">
-							<button type="submit"
+							<button type="submit" name="action" value="updateOrder"
 								class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">Update</button>
-							<a th:href="@{/deleteOrder(id=${order.id})}"
-							class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Delete</a>
+							<!-- Update button -->
+							<button type="submit" name="action" value="deleteOrder"
+								class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Delete</button>
 						</td>
 					</form>
 				</tr>
