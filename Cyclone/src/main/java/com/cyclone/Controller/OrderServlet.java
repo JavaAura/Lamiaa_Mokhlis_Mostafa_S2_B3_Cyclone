@@ -281,7 +281,7 @@ public class OrderServlet extends HttpServlet {
     
 
 	private void handleCreateOrder(HttpServletRequest request, HttpServletResponse response) {
-	/*	 try {
+	/* try {
 		        int clientId = Integer.parseInt(request.getParameter("clientId"));
 		        User client = userService.findUserById(clientId);
 
@@ -373,11 +373,13 @@ public class OrderServlet extends HttpServlet {
 	private void handleUpdateOrder(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	 try {
 		        int orderId = Integer.parseInt(request.getParameter("orderId"));
+		        System.out.println("Order id:"+ orderId);
 		        Optional<Order> optionalOrder = orderService.findOrderById(orderId);
 
 		        if (optionalOrder.isPresent()) {
 		            Order existingOrder = optionalOrder.get();
 		            System.out.println(existingOrder.getStatus());
+		            System.out.println(existingOrder.getId());
 		            String quantityStr = request.getParameter("quantity");
 
 		            if (quantityStr != null) {
