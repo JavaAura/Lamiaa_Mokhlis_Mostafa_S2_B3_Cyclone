@@ -125,6 +125,20 @@
 					</tr>
 				</tbody>
 			</table>
+
+			<div class="flex justify-between items-center mt-4">
+				<div>
+					<a
+						th:href="@{/user(action='paginate', pageNumber=${pageNumber - 1}, pageSize=${pageSize})}"
+						th:if="${pageNumber > 0}"
+						class="text-blue-500 hover:text-blue-700">Previous</a> <span>Page
+						<span th:text="${pageNumber + 1}"></span>
+					</span> <a
+						th:href="@{/user(action='paginate', pageNumber=${pageNumber + 1}, pageSize=${pageSize})}"
+						th:if="${totalAdmins > (pageNumber + 1) * pageSize}"
+						class="text-blue-500 hover:text-blue-700">Next</a>
+				</div>
+			</div>
 		</div>
 
 		<!-- Client Table (Initially Hidden) -->
@@ -165,6 +179,20 @@
 					</tr>
 				</tbody>
 			</table>
+
+			<div class="flex justify-between items-center mt-4">
+				<div>
+					<a
+						th:href="@{/user(action='paginate', pageNumber=${pageNumber - 1}, pageSize=${pageSize})}"
+						th:if="${pageNumber > 0}"
+						class="text-blue-500 hover:text-blue-700">Previous</a> <span>Page
+						<span th:text="${pageNumber + 1}"></span>
+					</span> <a
+						th:href="@{/user(action='paginate', pageNumber=${pageNumber + 1}, pageSize=${pageSize})}"
+						th:if="${totalClients > (pageNumber + 1) * pageSize}"
+						class="text-blue-500 hover:text-blue-700">Next</a>
+				</div>
+			</div>
 		</div>
 
 		<!-- Modal for User Form -->
