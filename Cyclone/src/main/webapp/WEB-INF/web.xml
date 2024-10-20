@@ -25,6 +25,10 @@
     <servlet-name>PageServlet</servlet-name>
     <servlet-class>com.cyclone.Controller.PageServlet</servlet-class>
   </servlet>
+   <servlet>
+        <servlet-name>OrderServlet</servlet-name>
+        <servlet-class>com.cyclone.Controller.OrderServlet</servlet-class> 
+    </servlet>
   
   <!-- Servlet mappings -->
   <servlet-mapping>
@@ -47,5 +51,11 @@
     <servlet-name>PageServlet</servlet-name>
     <url-pattern>/Page</url-pattern>
   </servlet-mapping>
+  
 
+
+    <servlet-mapping>
+        <servlet-name>OrderServlet</servlet-name>
+        <url-pattern>/orders</url-pattern>
+    </servlet-mapping>
 </web-app>
