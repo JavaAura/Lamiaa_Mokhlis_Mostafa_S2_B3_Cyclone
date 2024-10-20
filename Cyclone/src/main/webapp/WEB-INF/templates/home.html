@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyclone - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF0000',
+                        secondary: '#000000',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-gray-100">
+    <!-- Top navbar -->
+    <nav class="bg-secondary text-white">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="text-2xl font-bold">
+                <span class="text-primary">C</span>yclone
+            </div>
+            <div>
+                878-9674-4455
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu navbar -->
+    <div class="bg-primary">
+        <div class="container mx-auto px-4">
+            <ul class="flex justify-center space-x-6 py-4">
+                <li><a href="home.html" class="text-white font-bold hover:text-secondary">Home</a></li>
+                <li><a href="products.html" class="text-white font-bold hover:text-secondary">Products</a></li>
+                <li><a href="order-management.html" class="text-white font-bold hover:text-secondary">Orders</a></li>
+                <li><a href="user-management.html" class="text-white font-bold hover:text-secondary">Users</a></li>
+                <li><a href="contact.html" class="text-white font-bold hover:text-secondary">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-8 text-center text-secondary">Welcome to Cyclone</h1>
+
+        <!-- Hero section -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-12">
+            <div class="md:flex">
+                <div class="md:flex-shrink-0">
+                    <img class="h-48 w-full object-cover md:w-48" src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Cyclone Two-Wheelers">
+                </div>
+                <div class="p-8">
+                    <div class="uppercase tracking-wide text-sm text-primary font-semibold">Your destination for two-wheelers</div>
+                    <p class="mt-2 text-gray-600">Cyclone is your trusted partner for all your motorcycle and bicycle needs. We offer a wide range of quality products for all two-wheel enthusiasts.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured products -->
+        <h2 class="text-3xl font-bold mb-6 text-secondary">Our Featured Products</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img class="h-48 w-full object-cover" src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Sport Motorcycle">
+                <div class="p-4">
+                    <h3 class="font-bold text-xl mb-2">Sport Motorcycle</h3>
+                    <p class="text-gray-600">Discover our high-performance sport motorcycles.</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img class="h-48 w-full object-cover" src="https://images.unsplash.com/photo-1485965120184-e220f721d03e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Road Bike">
+                <div class="p-4">
+                    <h3 class="font-bold text-xl mb-2">Road Bike</h3>
+                    <p class="text-gray-600">Explore our selection of lightweight and fast road bikes.</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <img class="h-48 w-full object-cover" src="https://images.unsplash.com/photo-1601841162542-956af38ba052?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1740&q=80" alt="Electric Scooter">
+                <div class="p-4">
+                    <h3 class="font-bold text-xl mb-2">Electric Scooter</h3>
+                    <p class="text-gray-600">Opt for our eco-friendly electric scooters for the city.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
